@@ -1,0 +1,321 @@
+.contact {
+  position: relative;
+  /*
+    原来这里是 min-height: 100vh + 内容垂直居中，
+    当内容不够高时，上方就会空出一大片（和上一段的留白叠在一起像断了一截）。
+    现在让它按内容收口，留白改成固定的上下内边距。
+  */
+  display: flex;
+  align-items: center;
+  padding-block: clamp(58px, 4.8vw, 84px) 36px;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+}
+
+.contact__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/*
+  章节背景板（火红那一帧）
+  ------------------------------------------------------------------
+  这里承担的是"右半块太空"：标题在左、联系方式一条条横铺，
+  真正空着的是右上那一片。所以遮罩重心压在右侧，往下、往左提前收干净，
+  保证底下那三行联系方式还是干干净净的。
+  参数含义见 section-plate.css，想整体关掉把 --plate-opacity 改成 0。
+*/
+/* 带父级限定，确保覆盖一定压过 section-plate.css 的默认值（同上） */
+.contact__bg > .contact__plate {
+  --plate-opacity: 0.16;
+  --plate-blur: 5.6px;
+  --plate-brightness: 0.94;
+  --plate-contrast: 1.04;
+  --plate-saturate: 0.94;
+  /* 源帧裁成了一条宽幅，这里把人推到右侧空当 */
+  --plate-focus: 0% 50%;
+  --plate-scan-opacity: 0.26;
+  --plate-mask: radial-gradient(
+    72% 92% at 73% 44%,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.48) 34%,
+    rgba(0, 0, 0, 0.14) 58%,
+    transparent 78%
+  );
+}
+
+.contact__glow {
+  position: absolute;
+  left: -10%;
+  bottom: -30%;
+  width: 70vw;
+  height: 70vw;
+  background: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.13), transparent 72%);
+  filter: blur(10px);
+}
+
+.contact__ring {
+  position: absolute;
+  right: -16vw;
+  top: -24vw;
+  width: 62vw;
+  height: 62vw;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--blue-rgb), 0.14);
+}
+
+.contact__bg .grid-lines {
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent 90%);
+  opacity: 0.4;
+}
+
+.contact__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+/* ---------- 头部 ---------- */
+.contact__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(30px, 4vw, 70px);
+}
+
+/*
+  左半块（kicker + 大标题 + 说明）的位移/淡入由 AnimatedContent 逐帧写内联样式，
+  CSS 那边的 [data-reveal] 过渡在这里只会互相打架，所以把它关掉；
+  data-reveal 只留下来给标题每行的遮罩动画当触发开关。
+*/
+.contact__head-left[data-reveal] {
+  transition: none;
+}
+
+.contact__title {
+  margin-top: clamp(20px, 2.2vw, 32px);
+  font-size: var(--fs-display);
+  line-height: 1.14;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.contact__title-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.04em;
+}
+
+.contact__title-line > span {
+  display: block;
+  transform: translateY(112%);
+  transition: transform 1.15s var(--ease);
+  transition-delay: var(--line-delay, 0ms);
+}
+
+[data-reveal].is-in .contact__title-line > span {
+  transform: none;
+}
+
+.contact__desc {
+  margin-top: clamp(18px, 1.8vw, 26px);
+  max-width: 52ch;
+  color: var(--text-dim);
+  font-size: var(--fs-lead);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.contact__cta-wrap {
+  padding-bottom: 6px;
+}
+
+.contact__cta {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  width: clamp(130px, 10vw, 172px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  color: var(--text);
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  transition: background-color 0.5s var(--ease), color 0.5s var(--ease),
+    transform 0.6s var(--ease), border-color 0.5s var(--ease);
+}
+
+.contact__cta svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.5s var(--ease);
+}
+
+.contact__cta::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(var(--accent-rgb), 0) 0turn,
+    rgba(var(--accent-rgb), 0.9) 0.16turn,
+    rgba(var(--accent-rgb), 0) 0.3turn
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+  animation: ctaSpin 5.5s linear infinite;
+}
+
+@keyframes ctaSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contact__cta:hover {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  transform: scale(1.04);
+}
+
+.contact__cta:hover svg {
+  transform: translateX(5px);
+}
+
+/* ---------- 联系方式 ---------- */
+.contact__rows {
+  margin-top: clamp(44px, 5vw, 76px);
+  border-top: 1px solid var(--line);
+}
+
+.contact-row {
+  display: grid;
+  grid-template-columns: 60px minmax(120px, 180px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding-block: clamp(18px, 1.8vw, 26px);
+  border-bottom: 1px solid var(--line);
+  transition: padding-inline 0.5s var(--ease), background-color 0.5s var(--ease);
+}
+
+.contact-row:hover {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.06), transparent 60%);
+  padding-inline: 14px;
+}
+
+/* 同 .work__index：元素带 .mono，需要父级限定才能覆盖它的字号 */
+.contact-row .contact-row__index {
+  font-size: var(--fs-index-md);
+  letter-spacing: 0.08em;
+  color: var(--text-mute);
+}
+
+.contact-row__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-dim);
+  font-size: var(--fs-micro);
+}
+
+.contact-row__label em {
+  font-style: normal;
+  font-size: var(--fs-caption);
+  color: var(--text-mute);
+}
+
+.contact-row__value {
+  font-size: clamp(19px, 1.6vw, 28px);
+  letter-spacing: -0.01em;
+  transition: color 0.4s var(--ease);
+}
+
+a.contact-row__value:hover {
+  color: var(--accent);
+}
+
+.contact-row__copy {
+  height: 36px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  font-size: var(--fs-micro);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease),
+    color 0.35s var(--ease), border-color 0.35s var(--ease), background-color 0.35s var(--ease);
+}
+
+.contact-row:hover .contact-row__copy,
+.contact-row__copy:focus-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.contact-row__copy:hover {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: transparent;
+}
+
+/* ---------- 页脚 ---------- */
+.contact__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 26px;
+  margin-top: clamp(36px, 4vw, 60px);
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  color: var(--text-mute);
+  font-size: var(--fs-micro);
+}
+
+.contact__top {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+  transition: color 0.35s var(--ease);
+}
+
+.contact__top svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.5s var(--ease);
+}
+
+.contact__top:hover {
+  color: var(--accent);
+}
+
+.contact__top:hover svg {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 1000px) {
+  .contact__head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .contact__cta-wrap {
+    padding-bottom: 0;
+  }
+  .contact-row {
+    grid-template-columns: 44px 1fr auto;
+    row-gap: 8px;
+  }
+  .contact-row__value {
+    grid-column: 2 / -1;
+  }
+  .contact-row__copy {
+    opacity: 1;
+    transform: none;
+  }
+}

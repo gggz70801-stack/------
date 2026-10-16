@@ -1,0 +1,14 @@
+node_modules
+.pnpm-store
+media-src
+dist
+dist-ssr
+.shots
+.frames
+.snapshots
+.dev-server*.log
+.vite
+*.local
+.DS_Store
+npm-debug.log*
+Thumbs.db

@@ -1,0 +1,1003 @@
+/* ---------- 区块标题的右半页 ----------
+   目标：右上角这一块（说明 + 「查看全部作品 →」）和下面的作品文字栏共用同一条左边界。
+   做法：把 .sec-head 的列宽换成和 .work 完全一样的两列（1.32fr + 0.68fr + 同一个 gap），
+   右栏的左边界自然就落在作品文字栏的左边界上（1920 视口下都是 1254px）。
+   改动前这里是 620px 固定列 + 链接靠右对齐，比作品文字栏左出 64px，
+   再加上两条右对齐的文字，右上角就显得"各站各的"。
+   ------------------------------------------------------------------ */
+.works .sec-head {
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.68fr);
+  gap: 28px clamp(26px, 3.4vw, 64px);
+}
+
+.works .sec-head__right {
+  /* 说明在上、链接在下，两行都靠左排，左边界和下面作品列表对齐 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.works .sec-head__more {
+  /* 不再和说明的最后一行找平基线，链接自己占一行 */
+  padding-bottom: 0;
+}
+
+/*
+  说明文字收一档（走全站正文令牌，不写死像素）：
+  右栏变窄到和作品文字栏一样宽之后，原来那档字号在 1920 下会从「海外」中间断开，
+  收到正文号正好一行放下，读起来干净。
+*/
+.works .sec-head__desc {
+  font-size: var(--fs-body);
+}
+
+/* ---------- 工具条 ---------- */
+.works__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-block: clamp(20px, 2vw, 28px);
+}
+
+/*
+  首页作品区块的工具条：筛选按钮留在最左边，
+  「07 PROJECTS」从最右边移到作品文字栏的左边界上，变成列表的小标题
+  （和上面的说明、下面的条目同一条竖直线）。
+  列表页（#/works）用的是另一套网格，不受这条规则影响。
+*/
+.works .works__toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.68fr);
+  gap: 16px clamp(26px, 3.4vw, 64px);
+  align-items: center;
+}
+
+.works .works__count {
+  justify-self: start;
+}
+
+.works__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  height: 40px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.02em;
+  transition: color 0.35s var(--ease), border-color 0.35s var(--ease),
+    background-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.chip:hover {
+  color: var(--text);
+  border-color: var(--line-2);
+  transform: translateY(-1px);
+}
+
+.chip.is-active {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  font-weight: 500;
+}
+
+.works__count {
+  color: var(--text-mute);
+}
+
+/* ---------- 项目卡片 ---------- */
+.works__list {
+  border-top: 1px solid var(--line);
+}
+
+.work {
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(320px, 0.68fr);
+  gap: clamp(26px, 3.4vw, 64px);
+  align-items: center;
+  padding-block: clamp(26px, 2.8vw, 46px);
+  border-bottom: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+
+.work--flip .work__media {
+  order: 2;
+}
+
+/*
+  镜像行：媒体换到右边时，列宽也要跟着镜像。
+  （只写 order 不换列宽的话，图片会被塞进窄列——奇数行图比偶数行小一半，
+   这是之前"看着不齐"的原因之一。）
+*/
+.work--flip {
+  grid-template-columns: minmax(320px, 0.68fr) minmax(0, 1.32fr);
+}
+
+.work__media {
+  position: relative;
+  /* 和作品图比例一致（16:9），避免封面被裁掉产品名 */
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #100d0a;
+  overflow: hidden;
+  transition: border-color 0.5s var(--ease), box-shadow 0.6s var(--ease);
+}
+
+.work:hover .work__media {
+  border-color: rgba(var(--accent-rgb), 0.28);
+  box-shadow: 0 40px 90px -60px rgba(var(--accent-rgb), 0.5);
+}
+
+/*
+  战术取景框：鼠标移到作品上时，缩略图四角浮出四个白色直角括号。
+  这是全站唯一的"瞄具"式装饰——只在 hover（也就是你不读内容）的时候出现，
+  平时完全不占版面。四条边各由两条渐变画成（横 + 竖），
+  改颜色就改 --tick，改长度就改 background-size。
+*/
+.work__media::after {
+  content: '';
+  position: absolute;
+  inset: 11px;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+  --tick: rgba(255, 255, 255, 0.6);
+  background-image: linear-gradient(var(--tick), var(--tick)),
+    linear-gradient(var(--tick), var(--tick)), linear-gradient(var(--tick), var(--tick)),
+    linear-gradient(var(--tick), var(--tick)), linear-gradient(var(--tick), var(--tick)),
+    linear-gradient(var(--tick), var(--tick)), linear-gradient(var(--tick), var(--tick)),
+    linear-gradient(var(--tick), var(--tick));
+  background-size: 18px 1px, 1px 18px, 18px 1px, 1px 18px, 18px 1px, 1px 18px, 18px 1px,
+    1px 18px;
+  background-position: left top, left top, right top, right top, left bottom, left bottom,
+    right bottom, right bottom;
+  background-repeat: no-repeat;
+}
+
+.work:hover .work__media::after {
+  opacity: 1;
+}
+
+.work__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease);
+}
+
+.work:hover .work__media img {
+  transform: scale(1.035);
+}
+
+.work__media-tag {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(16, 12, 9, 0.6);
+  backdrop-filter: blur(8px);
+  color: var(--text-dim);
+  font-size: var(--fs-micro);
+}
+
+.work__placeholder {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 3;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.42);
+  font-size: var(--fs-micro);
+}
+
+.work__sheen {
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: -30%;
+  width: 34%;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-160%) rotate(14deg);
+  transition: transform 1.4s var(--ease);
+  pointer-events: none;
+}
+
+.work:hover .work__sheen {
+  transform: translateX(560%) rotate(14deg);
+}
+
+.work__body {
+  position: relative;
+}
+
+.work__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-mute);
+}
+
+/*
+  条目序号：比章节序号小一档（见 global.css 的 --fs-index-*）。
+  注意这里必须带上 .work__head 限定：这个 span 同时挂着 .mono，
+  而 global.css 在打包时排在组件样式后面，同等优先级下 .mono 会赢，
+  字号就会被压回 12px。加一层父级限定提到 0,2,0 才能真正生效。
+*/
+.work__head .work__index {
+  font-size: var(--fs-index-lg);
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  transition: color 0.4s var(--ease);
+}
+
+.work:hover .work__index {
+  color: var(--accent);
+}
+
+.work__year {
+  font-size: var(--fs-micro);
+}
+
+.work__title {
+  margin-top: 14px;
+  font-size: clamp(24px, 2vw, 32px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.work__subtitle {
+  margin-top: 10px;
+  color: var(--accent);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.2em;
+}
+
+.work__desc {
+  margin-top: 14px;
+  /* 行宽跟着字号走；44ch 在中文里只有 22 个字一行，太窄会拖出孤行 */
+  max-width: 26em;
+  color: var(--text-dim);
+  font-size: clamp(16px, 1.1vw, 17.5px);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.work__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.work__tags li {
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: var(--fs-caption);
+  color: var(--text-dim);
+  transition: border-color 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.work:hover .work__tags li {
+  border-color: var(--line-2);
+  color: var(--text);
+}
+
+.work__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.work__metrics li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.work__metrics span {
+  font-size: var(--fs-micro);
+  color: var(--text-mute);
+}
+
+.work__metrics strong {
+  font-size: var(--fs-item);
+  font-weight: 500;
+}
+
+/* 卡片右下角的"查看完整作品"提示 */
+.work__open {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 26px;
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  transition: color 0.4s var(--ease), gap 0.4s var(--ease);
+}
+
+.work__open svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.45s var(--ease);
+}
+
+.work:hover .work__open {
+  color: var(--accent);
+}
+
+.work:hover .work__open svg {
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   占位图形（真实作品图就位后会自动被替换）
+   ============================================================ */
+.wv {
+  position: absolute;
+  inset: 0;
+  transition: transform 1.2s var(--ease);
+}
+
+.work:hover .wv {
+  transform: scale(1.035);
+}
+
+.wv::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(110% 90% at 50% 40%, transparent 40%, rgba(5, 6, 10, 0.72) 100%);
+  pointer-events: none;
+}
+
+/* --- 亚马逊主图 --- */
+.wv--amazon {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 21%;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 4.4%;
+}
+
+.wv-am__main {
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(158deg, #f8fafc 0%, #dde3ea 100%);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.wv-am__badge {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: 9px;
+  color: #8b95a2;
+  letter-spacing: 0.2em;
+}
+
+.wv-am__product {
+  width: 26%;
+  aspect-ratio: 0.62;
+  border-radius: 26% 26% 18% 18% / 14% 14% 8% 8%;
+  background: linear-gradient(150deg, #414a57 0%, #222932 60%, #171c23 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.wv-am__shadow {
+  position: absolute;
+  bottom: 16%;
+  width: 34%;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(20, 26, 34, 0.35), transparent);
+}
+
+.wv-am__side {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.wv-am__thumb {
+  border-radius: 8px;
+  background: radial-gradient(58% 40% at 50% 62%, #48525f 0%, transparent 72%),
+    linear-gradient(158deg, #eef1f5, #d9dee5);
+}
+
+.wv-am__plus {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wv-am__plus .mono {
+  font-size: 9px;
+  color: var(--text-mute);
+}
+
+.wv-am__plus-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.wv-am__plus-row i {
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.22), rgba(var(--blue-rgb), 0.14));
+}
+
+/* --- 独立站页面 --- */
+.wv--website {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 3.4%;
+}
+
+.wv-site__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wv-site__bar i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.wv-site__url {
+  margin-left: 12px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 9px;
+  color: var(--text-mute);
+}
+
+.wv-site__hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 5%;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: linear-gradient(118deg, rgba(var(--accent-rgb), 0.18) 0%, rgba(var(--blue-rgb), 0.16) 52%, rgba(255, 255, 255, 0.02) 100%);
+  overflow: hidden;
+}
+
+.wv-site__title {
+  height: 15px;
+  width: 60%;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.wv-site__title--short {
+  width: 38%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.wv-site__text {
+  height: 7px;
+  width: 72%;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.wv-site__cta {
+  width: 108px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.85;
+}
+
+.wv-site__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.wv-site__grid span {
+  height: clamp(40px, 7vw, 74px);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* --- 活动主视觉 --- */
+.wv--campaign {
+  overflow: hidden;
+  background: radial-gradient(90% 80% at 12% 8%, rgba(var(--accent-rgb), 0.12), transparent 60%),
+    linear-gradient(160deg, #0d1119, #070a0f);
+}
+
+.wv-cmp__num {
+  position: absolute;
+  right: 5%;
+  top: 0%;
+  font-family: var(--font-mono);
+  font-size: clamp(90px, 13vw, 230px);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.13);
+  letter-spacing: -0.04em;
+}
+
+.wv-cmp__logo {
+  position: absolute;
+  left: 6.5%;
+  top: 12%;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(150deg, rgba(var(--accent-rgb), 0.3), rgba(var(--blue-rgb), 0.16));
+}
+
+.wv-cmp__bar {
+  position: absolute;
+  left: 6.5%;
+  height: 14px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.wv-cmp__bar--a {
+  top: 30%;
+  width: 42%;
+}
+
+.wv-cmp__bar--b {
+  top: 36%;
+  width: 26%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.wv-cmp__band {
+  position: absolute;
+  left: -12%;
+  top: 33%;
+  width: 124%;
+  height: 27%;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.26), rgba(var(--blue-rgb), 0.2) 60%, transparent);
+  transform: rotate(-7deg);
+  filter: blur(4px);
+}
+
+.wv-cmp__disc {
+  position: absolute;
+  left: 7%;
+  bottom: 13%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 14px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  background: rgba(5, 6, 10, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+.wv-cmp__disc strong {
+  font-family: var(--font-mono);
+  font-size: clamp(24px, 2.6vw, 42px);
+  line-height: 1;
+  color: var(--accent);
+}
+
+.wv-cmp__disc em {
+  font-style: normal;
+  font-size: 9px;
+  color: var(--text-mute);
+}
+
+.wv-cmp__line {
+  position: absolute;
+  right: 7%;
+  top: 22%;
+  width: 30%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.wv-cmp__line--2 {
+  top: 25%;
+  width: 20%;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.wv-cmp__word {
+  position: absolute;
+  right: 7%;
+  bottom: 14%;
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.wv-cmp__modules {
+  position: absolute;
+  right: 7%;
+  bottom: 24%;
+  display: flex;
+  gap: 8px;
+}
+
+.wv-cmp__modules i {
+  width: clamp(28px, 3.4vw, 54px);
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.wv-cmp__modules i:nth-child(2) {
+  background: rgba(var(--accent-rgb), 0.45);
+}
+
+/* --- 社媒物料 --- */
+.wv--social {
+  perspective: 900px;
+}
+
+.wv-soc {
+  position: absolute;
+  border-radius: 12px;
+  border: 1px solid var(--line-2);
+  box-shadow: 0 34px 70px -34px rgba(0, 0, 0, 0.95);
+  transition: transform 1.1s var(--ease);
+}
+
+.wv-soc i {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.wv-soc--1 {
+  width: 25%;
+  aspect-ratio: 1;
+  left: 9%;
+  top: 17%;
+  background: linear-gradient(150deg, #1c2531, #0c1118);
+  transform: rotate(-6deg);
+}
+
+.wv-soc--2 {
+  width: 30%;
+  aspect-ratio: 4 / 5;
+  left: 33%;
+  top: 9%;
+  z-index: 2;
+  background: linear-gradient(150deg, rgba(var(--accent-rgb), 0.42), rgba(9, 12, 18, 0.95) 62%),
+    linear-gradient(#0d1219, #0d1219);
+  transform: rotate(2deg);
+}
+
+.wv-soc--3 {
+  width: 21%;
+  aspect-ratio: 9 / 16;
+  right: 11%;
+  top: 12%;
+  background: linear-gradient(150deg, rgba(var(--blue-rgb), 0.55), rgba(9, 12, 18, 0.95) 66%),
+    linear-gradient(#0d1219, #0d1219);
+  transform: rotate(6deg);
+}
+
+.work:hover .wv-soc--1 {
+  transform: rotate(-9deg) translateY(-8px);
+}
+
+.work:hover .wv-soc--2 {
+  transform: rotate(0deg) translateY(-12px);
+}
+
+.work:hover .wv-soc--3 {
+  transform: rotate(9deg) translateY(-8px);
+}
+
+/* --- 精修 / 渲染 --- */
+.wv--retouch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.wv-rt__side {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: #14100c;
+  overflow: hidden;
+}
+
+.wv-rt__side--after {
+  background: radial-gradient(70% 60% at 50% 42%, rgba(var(--accent-rgb), 0.16), transparent 72%), #14100c;
+}
+
+.wv-rt__object {
+  width: 34%;
+  aspect-ratio: 0.66;
+  border-radius: 34% 34% 22% 22% / 20% 20% 10% 10%;
+  background: linear-gradient(160deg, #39424f 0%, #1a2029 100%);
+  filter: saturate(0.35) contrast(0.92);
+  transition: filter 0.9s var(--ease), transform 1.1s var(--ease);
+}
+
+.wv-rt__side--after .wv-rt__object {
+  background: linear-gradient(160deg, #e6edf2 0%, #90a0ad 72%, #6f7d8a 100%);
+  filter: none;
+  box-shadow: 0 34px 60px -26px rgba(var(--accent-rgb), 0.45);
+  transform: translateY(-6px);
+}
+
+.wv-rt__glow {
+  position: absolute;
+  width: 46%;
+  height: 46%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.28), transparent);
+  filter: blur(6px);
+}
+
+.wv-rt__label {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--text-mute);
+}
+
+.wv-rt__side--after .wv-rt__label {
+  color: var(--accent);
+}
+
+.wv-rt__handle {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+.wv-rt__handle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: rgba(5, 6, 10, 0.7);
+}
+
+/* --- 线下物料 --- */
+.wv--offline {
+  background: linear-gradient(180deg, #0c1017, #070a0f);
+}
+
+.wv--offline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 12.5% 100%;
+}
+
+.wv-off {
+  position: absolute;
+  bottom: 16%;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  overflow: hidden;
+  transition: transform 1.1s var(--ease);
+}
+
+.wv-off i {
+  display: block;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.wv-off--rollup {
+  left: 10%;
+  width: 22%;
+  height: 58%;
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.3), rgba(255, 255, 255, 0.03));
+}
+
+.wv-off--rollup i:first-child {
+  width: 60%;
+  height: 8px;
+  margin: 16% 0 0 14%;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.wv-off--rollup i:last-child {
+  width: 42%;
+  height: 6px;
+  margin: 8% 0 0 14%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.wv-off--poster {
+  left: 36%;
+  width: 27%;
+  height: 42%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+}
+
+.wv-off--poster i {
+  width: 46%;
+  height: 46%;
+  margin: 22% auto 0;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb), 0.3);
+}
+
+.wv-off--lightbox {
+  right: 10%;
+  width: 24%;
+  height: 30%;
+  background: linear-gradient(90deg, rgba(var(--blue-rgb), 0.34), rgba(var(--accent-rgb), 0.2));
+}
+
+.wv-off--lightbox i {
+  position: absolute;
+}
+
+.wv-off--lightbox i:first-child {
+  top: 22%;
+  left: 12%;
+  width: 52%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.wv-off--lightbox i:last-child {
+  top: 44%;
+  left: 12%;
+  width: 34%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.work:hover .wv-off--rollup {
+  transform: translateY(-10px);
+}
+
+.work:hover .wv-off--poster {
+  transform: translateY(-6px);
+}
+
+.work:hover .wv-off--lightbox {
+  transform: translateY(-3px);
+}
+
+.wv-off__floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 15.5%;
+  height: 1px;
+  background: var(--line-2);
+}
+
+.wv-off__vi {
+  position: absolute;
+  left: 6%;
+  top: 7%;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--text-mute);
+}
+
+.wv-off__swatches {
+  position: absolute;
+  right: 6%;
+  top: 8%;
+  display: flex;
+  gap: 6px;
+}
+
+.wv-off__swatches i {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.wv-off__swatches i:first-child {
+  background: var(--accent);
+}
+
+.wv-off__swatches i:nth-child(2) {
+  background: rgba(var(--blue-rgb), 0.8);
+}
+
+.wv-off__swatches i:nth-child(3) {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 1100px) {
+  .work {
+    grid-template-columns: 1fr;
+  }
+  .work--flip .work__media {
+    order: 0;
+  }
+  .work__desc {
+    max-width: none;
+  }
+  /* 单栏之后，标题右半页和工具条也回到"一行一行往下排" */
+  .works .sec-head,
+  .works .works__toolbar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 占位图形里的小标签：统一抬到可读下限（有真实作品图时不会出现） */
+.wv-am__badge,
+.wv-am__plus .mono,
+.wv-site__url,
+.wv-cmp__disc em,
+.wv-cmp__word,
+.wv-soc i,
+.wv-rt__label,
+.wv-off__vi {
+  font-size: var(--fs-micro);
+}

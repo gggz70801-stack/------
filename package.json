@@ -1,0 +1,25 @@
+{
+  "name": "yuan-bingjun-portfolio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "袁炳俊 · 跨境电商视觉设计师 个人作品集网站 (React + Vite)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/check-size.mjs --warn",
+    "preview": "vite preview --port 4173",
+    "size": "node scripts/check-size.mjs",
+    "media:image": "node scripts/optimize-images.mjs",
+    "media:video": "node scripts/optimize-video.mjs",
+    "media:frames": "node scripts/grab-frames.mjs",
+    "plates": "node scripts/make-section-plates.mjs"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "vite": "^7.0.0"
+  }
+}

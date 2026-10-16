@@ -1,0 +1,58 @@
+/* ============================================================
+   章节背景板（SectionPlate）
+   一块铺满章节的底纹画面，任何章节都能复用。
+   调参入口只有下面这一组 CSS 变量，调用方按需覆盖即可。
+   ============================================================ */
+
+.plate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+
+  /* 默认值：拿掉遮罩就是一张铺满的图，透明度和模糊都已经很保守 */
+  --plate-opacity: 0.22;
+  --plate-blur: 2.6px;
+  --plate-brightness: 1;
+  --plate-contrast: 1.04;
+  --plate-saturate: 1;
+  --plate-focus: 50% 40%;
+  --plate-mask: none;
+  --plate-scan-opacity: 0.34;
+}
+
+.plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--plate-focus);
+  opacity: var(--plate-opacity);
+  /*
+    模糊是关键：轮廓还在、细节糊掉，人物就不会"跳出来"跟文字抢。
+    背景板在脚本里已经压过一次色，这里只做最后的微调。
+  */
+  filter: brightness(var(--plate-brightness)) contrast(var(--plate-contrast))
+    saturate(var(--plate-saturate)) blur(var(--plate-blur));
+  -webkit-mask-image: var(--plate-mask);
+  mask-image: var(--plate-mask);
+}
+
+/*
+  扫描线：1px 暗 / 3px 亮的细横纹。
+  这是整站"战术屏幕感"的全部来源——它足够小，小到你看不见它，
+  但拿掉之后同一个画面会立刻变回"一张普通照片"。
+*/
+.plate__scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.5) 0 1px,
+    rgba(0, 0, 0, 0) 1px 4px
+  );
+  opacity: var(--plate-scan-opacity);
+  -webkit-mask-image: var(--plate-mask);
+  mask-image: var(--plate-mask);
+}
+

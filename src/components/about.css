@@ -1,0 +1,519 @@
+/* ============================================================
+   关于我
+   三段式：① 人像 + 自我介绍 ② 工作经历 ‖ 联系方式 ③ 获奖一行带过
+   ============================================================ */
+
+.about__top {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  gap: clamp(32px, 3.6vw, 64px);
+  margin-top: clamp(32px, 3.4vw, 52px);
+}
+
+/* 整块比别的章节稍紧凑一点 */
+.about {
+  padding-block: clamp(48px, 4.2vw, 72px);
+  overflow: hidden;
+}
+
+/*
+  「关于我」的章节背景板（冷蓝夜戏那一帧）
+  ------------------------------------------------------------------
+  · 存在的意义 —— 让「01 关于我」和「02 跨境电商项目」读起来是两段，
+    而不是一片连着黑到底；顺手把右上角那块空当填上。
+  · 三条底线 —— ① 冷色、单色（不带原片的花哨文字）② 很淡 ③ 不抢正文
+  · 想整体关掉：把下面的 --plate-opacity 改成 0。参数含义见 section-plate.css
+  · 人物（幽灵的头）落在画面偏右上，所以遮罩重心也跟着偏右上，
+    左边留给人物卡、下面提前收干净——下半页「工作经历 / 获奖」保持干净。
+*/
+/* 带父级限定（.about > .about__bg）：确保这几行覆盖一定能压过 section-plate.css 的默认值，
+   不用去赌两份样式的打包顺序 */
+.about > .about__bg {
+  --plate-opacity: 0.44;
+  --plate-blur: 1.8px;
+  --plate-brightness: 0.9;
+  --plate-contrast: 1.16;
+  --plate-saturate: 1.05;
+  --plate-focus: 66% 22%;
+  --plate-scan-opacity: 0.3;
+  --plate-mask: radial-gradient(
+    96% 62% at 74% 20%,
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(0, 0, 0, 0.46) 36%,
+    rgba(0, 0, 0, 0.14) 62%,
+    transparent 84%
+  );
+}
+
+/* 正文永远压在背景层之上 */
+.about > .shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- 人物图 ----------
+   改用 React Bits <HoloCard />：人像变成一张会随指针倾斜、箔面会反光的"镭射名片"。
+   卡片内部自己带圆角、银色边框和投影，所以这里只负责把它放进栅格列里。
+   ------------------------------------------------------------------ */
+.about__portrait {
+  position: relative;
+  width: 100%;
+}
+
+.portrait-card {
+  /* 宽度跟着栅格列走；比例锁 3:4，图片加载完不会再跳一下 */
+  --hc-w: 100%;
+  --hc-ratio: 0.75;
+}
+
+/* ---------- 自我介绍区：左右两栏 ----------
+   原来这里只有"正文 + 右边一列标签"，正文写完就到底了，
+   正文下面那一大块（差不多有一个人像卡那么高）全空着。
+   现在左右各一栏，每栏各自往下排：
+       左栏：名字（重音） → 自我介绍
+       右栏：学历（加重） → 方向 / 技能
+   名字和正文挨着，读起来是一条线；两栏都排到接近人像卡的高度，
+   横向不再留半张纸的空白。
+   ------------------------------------------------------------------ */
+.about__intro {
+  display: grid;
+  /*
+    列宽：左边的 1fr 装简介，右边固定 430px 装"硬信息"（学历 / 技能）。
+    下面「工作经历 ‖ 联系方式」那一行刻意用同一套列宽 + 同一个 gap，
+    两行的右栏才会共用同一条左边界 —— 改这里的话，.about__mid 也要跟着改。
+  */
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 430px);
+  gap: clamp(34px, 3.4vw, 64px);
+  /* stretch：两栏都被撑到同一高度，右栏才有"把内容送到下边"的余地 */
+  align-items: stretch;
+}
+
+.about__col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 2.4vw, 42px);
+  min-width: 0;
+  /*
+    space-between：内容多的那一栏（左）照常从上往下排；
+    内容少的那一栏（右）最后一组标签会被推到底部，
+    于是 FOCUS 和 SKILLS 收在同一条基线上，整块看起来是"排过的"，不是"没排满"。
+  */
+  justify-content: space-between;
+}
+
+/* ---------- ① 名字 ---------- */
+.about__name {
+  /* 比章节标题（42px 封顶）再大一档，让"关于我"这块有个明确的主语 */
+  font-size: clamp(32px, 2.7vw, 48px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.about__name-alt {
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.1vw, 19px);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* 身份这一行和左上角品牌区是同一句话，颜色也跟那边呼应 */
+.about__name-sub {
+  margin-top: 9px;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  opacity: 0.9;
+}
+
+/* ---------- ② 学历：右栏的第一行 ----------
+   以前这里是一张带边框的"资历卡"。框本身不丑，问题是卡里的字会比卡框再往里缩 29px，
+   于是右栏出现两条左边界——卡里的字一条、下面 SKILLS 一条——整块看着就散了。
+   现在改成和左栏 FOCUS 一样的「小标题 + 内容」行：整栏共用同一条左边界，
+   学历的份量靠字号（比正文大一档）和亮度撑，不靠一个框。
+   它和下面 SKILLS 之间那条发丝线还是留着（见 .info-row 的 border-top），
+   整站的"分行"用的都是同一根线。
+   ------------------------------------------------------------------ */
+.about__edu {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.about__edu-label {
+  color: var(--text-mute);
+}
+
+.about__edu-school {
+  /* 和 .info-row 里"标签 → 内容"的空档保持一致 */
+  margin-top: 11px;
+  font-size: clamp(17px, 1.3vw, 20px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.about__edu-meta {
+  margin-top: 8px;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.about__bio p {
+  color: var(--text-dim);
+  /* 正文比全站默认（16px）大一档：整块的字都偏小，读起来累 */
+  font-size: clamp(17px, 1.1vw, 18px);
+  line-height: 1.9;
+  /*
+    行宽：原来 58ch（约 29 个中文字一行），第二段正好卡在"最后一行只剩 3 个字"，
+    屏幕上就是一个孤零零的「信」。」。这里放宽到 34em（约 34 字一行），
+    两段都收成整行，不再拖尾巴。
+    34em 而不是固定 px，是为了让行宽跟着字号走——以后调字号不会再崩。
+  */
+  max-width: 34em;
+  text-wrap: pretty;
+}
+
+.about__bio p + p {
+  margin-top: 18px;
+}
+
+.about__bio-lead {
+  color: var(--text) !important;
+  /* 导语再大一档，和下面的正文拉开层级（原来只差 3px，几乎看不出来） */
+  font-size: clamp(19px, 1.5vw, 23px) !important;
+  line-height: 1.76 !important;
+  letter-spacing: -0.005em;
+}
+
+/* 方向 / 技能：两行标签，靠左排 */
+.about__rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding-block: clamp(14px, 1.3vw, 18px);
+  border-top: 1px solid var(--line);
+}
+
+/*
+  第一行（左栏 FOCUS / 右栏 SKILLS）的上边线保留：
+  这两行上面都还有内容，这条线正好当"分行线"用。
+*/
+
+.info-row__label {
+  color: var(--text-mute);
+}
+
+.info-row__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.info-row__tags li {
+  padding: 7px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14.5px;
+  color: var(--text-dim);
+  transition: border-color 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.info-row__tags li:hover {
+  border-color: var(--line-2);
+  color: var(--text);
+}
+
+/* ---------- 第二行：工作经历 ‖ 联系方式 ---------- */
+.about__mid {
+  display: grid;
+  /*
+    这里的列宽和间距必须和上面的 .about__intro 一模一样（同一套 1fr + 430px + 同一个 gap），
+    这样「学历 / 技能」和「联系方式」的右栏才会落在同一条左边界上。
+    改动前这里用的是另一套列宽（1.34fr + 0.66fr + 更大的 gap），
+    右边那半页因此有三条左边界：学历卡里的字、SKILLS、联系方式，各差几十个像素。
+  */
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 430px);
+  gap: clamp(34px, 3.4vw, 64px);
+  margin-top: clamp(32px, 3.2vw, 52px);
+}
+
+.about__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--line);
+}
+
+.about__head h3 {
+  font-size: clamp(22px, 1.6vw, 28px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.about__head .mono {
+  color: var(--text-mute);
+}
+
+/* --- 工作经历：一家公司一行 --- */
+.job {
+  display: grid;
+  /* 日期这列要装得下「2024.04 — 2024.10」；字号提上去之后 146px 会被切掉一截 */
+  grid-template-columns: minmax(148px, 176px) minmax(0, 1fr);
+  gap: 6px 22px;
+  padding-block: clamp(16px, 1.5vw, 22px);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  transition: background-color 0.5s var(--ease);
+}
+
+.job::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  width: 1px;
+  height: 0;
+  background: var(--accent);
+  transition: height 0.6s var(--ease), top 0.6s var(--ease);
+}
+
+.job:hover::before {
+  top: 24%;
+  height: 52%;
+}
+
+.job__period {
+  color: var(--text-mute);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  padding-top: 5px;
+}
+
+.job__main {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.job__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.job__company {
+  font-size: var(--fs-item);
+  font-weight: 500;
+}
+
+.job__point {
+  color: var(--text-dim);
+  /* 工作经历是这个板块里信息量最大的部分，正文跟着提一档 */
+  font-size: clamp(15.5px, 1.05vw, 17px);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+/* --- 联系方式 --- */
+.contact-list__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 14px;
+  padding-block: clamp(11px, 1.1vw, 14px);
+  border-bottom: 1px solid var(--line);
+}
+
+.contact-list__label {
+  grid-column: 1 / -1;
+  font-size: var(--fs-caption);
+  color: var(--text-mute);
+}
+
+.contact-list__value {
+  font-size: clamp(17px, 1.15vw, 19px);
+  letter-spacing: 0.01em;
+  word-break: break-all;
+}
+
+a.contact-list__value:hover {
+  color: var(--accent);
+}
+
+.about__copy {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--text-mute);
+  transition: color 0.35s var(--ease), border-color 0.35s var(--ease),
+    background-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.about__copy svg {
+  width: 14px;
+  height: 14px;
+}
+
+.about__copy:hover {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+/* ---------- 第三行：获奖（占比压到最小） ---------- */
+.about__awards {
+  margin-top: clamp(28px, 2.8vw, 44px);
+}
+
+.about__awards .about__head {
+  justify-content: flex-start;
+}
+
+.awards__certs {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.cert-thumb {
+  display: block;
+  width: 48px;
+  height: 66px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #14100c;
+  transition: border-color 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.cert-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.72;
+  transition: opacity 0.4s var(--ease);
+}
+
+.cert-thumb:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+}
+
+.cert-thumb:hover img {
+  opacity: 1;
+}
+
+.award-row {
+  display: grid;
+  grid-template-columns: minmax(132px, 156px) minmax(0, 1fr) auto;
+  align-items: center;
+  /* 同上：条目内部也把空档拉开，和上面两栏的节奏保持一致 */
+  gap: 6px 32px;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.award-row__year {
+  color: var(--accent);
+  font-size: var(--fs-micro);
+}
+
+.award-row__title {
+  font-size: var(--fs-small);
+  color: var(--text);
+}
+
+.award-row__title em {
+  font-style: normal;
+  color: var(--text-dim);
+  margin-left: 10px;
+}
+
+.award-row__prizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.award-row__prizes em {
+  font-style: normal;
+  font-size: var(--fs-caption);
+  color: var(--text-dim);
+  padding: 4px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1100px) {
+  .about__top {
+    grid-template-columns: 1fr;
+  }
+  .about__intro {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(26px, 3vw, 38px);
+  }
+  /*
+    窄屏下两栏打散成一条流水线，再按阅读顺序重排：
+      名字 → 学历 → 自我介绍 → 方向 / 技能
+    （学历必须提到正文前面，否则会掉到整段最后，等于白强调）
+  */
+  .about__col {
+    display: contents;
+  }
+  .about__identity {
+    order: 1;
+  }
+  .about__edu {
+    order: 2;
+  }
+  .about__bio {
+    order: 3;
+  }
+  .about__rows {
+    order: 4;
+  }
+  .about__portrait {
+    max-width: 320px;
+  }
+  .about__mid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 720px) {
+  .job {
+    grid-template-columns: 1fr;
+  }
+  .job__period {
+    padding-top: 0;
+  }
+  .award-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .award-row__prizes {
+    margin-top: 4px;
+  }
+}

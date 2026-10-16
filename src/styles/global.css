@@ -1,0 +1,743 @@
+/* ============================================================
+   袁炳俊 · 作品集  —  基础样式与设计令牌
+   暗色 / 克制 / 科技感：近黑底 + 发丝线 + 单一薄荷绿强调色
+   ============================================================ */
+
+:root {
+  /* ---------- 背景：暖调近黑 ----------
+     不是蓝黑、也不是纯黑：带一点点棕调，才能托得住琥珀橙，
+     也让整站和首屏那张火焰画面的色温连成一体。 */
+  --bg: #0a0705;
+  --bg-soft: #0e0a07;
+  --bg-panel: #14100c;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.14);
+
+  /* ---------- 文字：暖白 + 两级暖灰（不用纯白，避免和暖底打架） ---------- */
+  --text: #f5f0ea;
+  --text-dim: #a8a19a;
+  --text-mute: #6f6862;
+
+  /* ---------- 主色：琥珀橙 ----------
+     只出现在小面积上：小标签、序号、细线、按钮、hover、光晕。
+     正文永远用白 / 暖灰，标题永远是白色——橙色是"点缀"，不是"底色"。 */
+  --accent-rgb: 255, 122, 24;
+  --accent: #ff7a18;
+  --accent-hover: #ff9346;
+  --accent-deep: #b8480f;
+  --accent-ink: #17100a; /* 橙色底上的文字：深棕黑，比纯黑更有质感 */
+  --accent-dim: rgba(var(--accent-rgb), 0.5);
+  --accent-soft: rgba(var(--accent-rgb), 0.1);
+
+  /* ---------- 点缀色（极少量，用来做冷暖对比） ---------- */
+  --blue-rgb: 92, 124, 250;
+  --blue: #5c7cfa; /* 冷蓝：只进光晕和渐变，做纵深 */
+  --gold-rgb: 214, 178, 128;
+  --gold: #d6b280; /* 香槟金：小细节（奖章、细描边） */
+
+  --shell: 1700px;
+  --pad: clamp(20px, 4vw, 68px);
+  --radius: 20px;
+  --radius-sm: 12px;
+
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SFMono-Regular', 'Cascadia Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
+  /* 海报级英文标题字体：Bahnschrift Condensed（现代、压缩、有力），比 Impact 少一点"电影预告片感" */
+  --font-display: 'Bahnschrift Condensed', 'Bahnschrift SemiCondensed', Bahnschrift, 'Arial Narrow',
+    'Segoe UI Variable Display', 'Segoe UI Black', sans-serif;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---------- 字号体系（1.2 的模数阶梯，基准 17px） ----------
+     上一版是按"英文站"的常规区间定的（正文 16、章节标题 42）。
+     这套站是中文为主，同样的 px 在中文里看着要小一档，整页就发空，
+     所以把基准抬到 17px，上面几级跟着按 1.2 倍走：
+
+       微标签 12.5 · 图注 13.5 · 次要正文 15 · 正文 17 · 导语 19–21
+       条目标题 19 · 小节/卡片 23–30 · 区块标题 32–46 · 页面标题 36–58
+
+     两条纪律：
+       ① 正文最小 15px（再小中文就糊）；② 相邻层级至少差 1.2 倍，否则看不出层级。
+     想整体再大/再小，只改下面这一组，全站跟着走（组件里别再写死 px）。 */
+  --fs-micro: 12.5px;
+  --fs-caption: 13.5px;
+  --fs-small: 15px;
+  --fs-body: 17px;
+  --fs-lead: clamp(19px, 1.35vw, 21px);
+  --fs-item: 19px;
+  --fs-block: clamp(23px, 1.7vw, 30px);
+  /* 区块标题（关于我 / 跨境电商项目 / 个人优势）：这一版加重一档，
+     让它真的"压得住"整块内容——小字配大留白才叫空，大字配大留白叫高级。 */
+  --fs-section: clamp(34px, 2.9vw, 54px);
+  --fs-page: clamp(36px, 3.4vw, 58px);
+  --fs-display: clamp(34px, 3.6vw, 60px);
+
+  /* ---------- 序号字号（01 / 02 / 03 …） ----------
+     序号是版面上的"节拍点"，比同级正文大一档才站得住（原来 12.5–14px，读起来像噪声）。
+     分三档，统一按"1700 版心上到顶值、窄屏轻微收小"的节奏走：
+       xl → 章节序号（关于我 / 作品集 / 个人优势 左侧的 01 02 03）
+       lg → 条目序号（作品行、个人优势卡片右上角的 01…07）
+       md → 列表序号（联系方式三行、详情页设计说明 01 02 03）
+     想整体再大/再小，改这三个值即可，所有位置会一起跟着变。 */
+  --fs-index-xl: clamp(21px, 1.4vw, 25px);
+  --fs-index-lg: clamp(18px, 1.24vw, 21px);
+  --fs-index-md: clamp(16px, 1.06vw, 18px);
+}
+
+/* 英文：大写字母视觉上更宽更大，同级字号整体收一档 */
+html[lang='en'] {
+  --fs-lead: clamp(18px, 1.25vw, 20px);
+  --fs-block: clamp(22px, 1.6vw, 28px);
+  --fs-section: clamp(29px, 2.4vw, 42px);
+  --fs-page: clamp(33px, 3.1vw, 52px);
+  --fs-display: clamp(31px, 3.2vw, 52px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  /* 中文正文的舒适下限；比上一版大 1px，整页的"空"主要靠它补 */
+  font-size: 17px;
+  line-height: 1.7;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body.is-locked {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---------- 滚动条 ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #241d17;
+  border: 2px solid var(--bg);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #332a22;
+}
+
+/* ---------- 通用布局 ---------- */
+.shell {
+  width: 100%;
+  max-width: calc(var(--shell) + var(--pad) * 2);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+.section {
+  position: relative;
+  /*
+    段间距：上一版压到了 64–100px，但两段叠起来还是有 200px 空档，
+    在大屏上就是一条明显的"空带"。现在收到 54–84px——
+    分隔感靠那条发丝线，不靠硬留白。
+  */
+  padding-block: clamp(54px, 4.8vw, 84px);
+}
+
+.about,
+.works {
+  border-top: 1px solid var(--line);
+}
+
+section[id] {
+  scroll-margin-top: 76px;
+}
+
+/* 双跑马灯带 */
+.band {
+  display: flex;
+  flex-direction: column;
+  border-block: 1px solid var(--line);
+}
+
+.band .marquee {
+  border-block: 0;
+}
+
+.band .marquee + .marquee {
+  border-top: 1px solid var(--line);
+}
+
+.section--tight {
+  padding-block: clamp(52px, 4.6vw, 78px);
+}
+
+.hairline {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+/* ---------- 文字 ---------- */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kicker::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+.kicker--plain::before {
+  display: none;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+.muted {
+  color: var(--text-dim);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 章节标题 ---------- */
+.sec-head {
+  display: grid;
+  /*
+    右边这列从 420px 放宽到 560px：说明文字离标题近一点，
+    中间那块"什么都没有"的空当就窄了一大截。
+  */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 620px);
+  align-items: end;
+  gap: 28px 64px;
+  padding-bottom: clamp(22px, 2vw, 32px);
+  border-bottom: 1px solid var(--line);
+}
+
+.sec-head__left {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(18px, 2vw, 34px);
+}
+
+.sec-head__index {
+  font-family: var(--font-mono);
+  font-size: var(--fs-index-xl);
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  padding-top: 0.5em;
+  border-top: 1px solid var(--accent-dim);
+  min-width: 56px;
+}
+
+.sec-head__title {
+  font-size: var(--fs-section);
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+.sec-head__title-en {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 16px;
+}
+
+.sec-head__desc {
+  color: var(--text-dim);
+  /*
+    说明文字：比正文大一档，但不要到"导语"那一级。
+    上一版放到 21px 之后，这块比大标题还抢眼——说明只是配角，
+    比正文大一点点就够，它的存在感应该来自"位置"，不是"字大"。
+  */
+  font-size: clamp(17px, 1.15vw, 18.5px);
+  line-height: 1.85;
+  /*
+    balance（而不是 pretty）：区块说明最多两三行，balance 会把每一行排成等长，
+    不会出现"最后一行只剩三个字"。长正文才用 pretty——两者管的事不一样。
+  */
+  text-wrap: balance;
+}
+
+.sec-head__right {
+  /*
+    说明 ‖ 「查看全部作品 →」并排，而不是上下叠。
+    叠着放的时候，下面那条链接会把整块顶高，说明文字就飘在标题上方对不齐；
+    并排之后右边这一整块只剩一行高，底边自然和左边的大标题收在同一条线上。
+    链接靠右对齐，正好落在说明最后一行的右端。
+  */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0 28px;
+}
+
+/* 区块标题右侧的「查看全部作品 →」 */
+.sec-head__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  white-space: nowrap;
+  /* 和说明最后一行的基线对齐时，视觉重心会偏上一点，往下推 3px 找平 */
+  padding-bottom: 3px;
+  transition: color 0.4s var(--ease), gap 0.4s var(--ease);
+}
+
+.sec-head__more svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sec-head__more:hover {
+  color: var(--accent);
+  gap: 14px;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 52px;
+  padding-inline: 26px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  font-size: var(--fs-small);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: color 0.4s var(--ease), border-color 0.4s var(--ease),
+    background-color 0.4s var(--ease), transform 0.4s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+
+.btn__ico {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.5s var(--ease);
+}
+
+.btn:hover {
+  border-color: var(--accent-dim);
+  background: rgba(255, 255, 255, 0.055);
+  transform: translateY(-2px);
+}
+
+.btn:hover .btn__ico {
+  transform: translateX(4px);
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  font-weight: 500;
+}
+
+.btn--primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 14px 40px -14px rgba(var(--accent-rgb), 0.55);
+}
+
+.btn--ghost {
+  background: transparent;
+}
+
+.btn--sm {
+  height: 42px;
+  padding-inline: 20px;
+  font-size: var(--fs-caption);
+}
+
+/* ---------- 链接下划线动效 ---------- */
+.link-sweep {
+  position: relative;
+}
+
+.link-sweep::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease);
+}
+
+.link-sweep:hover::after {
+  transform: scaleX(1);
+}
+
+/* ---------- 滚动出现动效 ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.9s var(--ease), transform 1.05s var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal='fade'] {
+  transform: none;
+}
+
+[data-reveal='right'] {
+  transform: translate3d(-34px, 0, 0);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 装饰层 ---------- */
+.grain {
+  position: fixed;
+  inset: -60%;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 5s steps(5) infinite;
+}
+
+@keyframes grain {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(-6%, 4%, 0);
+  }
+  40% {
+    transform: translate3d(4%, -6%, 0);
+  }
+  60% {
+    transform: translate3d(-4%, -4%, 0);
+  }
+  80% {
+    transform: translate3d(6%, 4%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.spotlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 760px;
+  height: 760px;
+  margin: -380px 0 0 -380px;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.028) 34%,
+    rgba(5, 6, 10, 0) 68%
+  );
+  transition: opacity 0.6s linear;
+}
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  z-index: 80;
+  background: linear-gradient(90deg, var(--blue), var(--accent));
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.5);
+}
+
+/* 页面内网格装饰 */
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px);
+  background-size: 25% 100%;
+  opacity: 0.5;
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+}
+
+/* ---------- 跑马灯 ---------- */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+  padding-block: 22px;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 46s linear infinite;
+}
+
+.marquee--reverse .marquee__track {
+  animation-direction: reverse;
+  animation-duration: 56s;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 26px;
+  padding-inline: 26px;
+  font-size: clamp(17px, 1.3vw, 22px);
+  color: var(--text-dim);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.marquee__item::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ---------- 提示条 ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 42px;
+  z-index: 90;
+  transform: translate(-50%, 20px);
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(20, 16, 12, 0.92);
+  backdrop-filter: blur(12px);
+  font-size: var(--fs-small);
+  color: var(--text);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease), transform 0.45s var(--ease);
+}
+
+.toast.is-open {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast__dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* ---------- 无障碍 / 减少动效 ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .sec-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --pad: 20px;
+  }
+  .spotlight,
+  .grid-lines {
+    display: none;
+  }
+}
+
+/* ============================================================
+   英文排版专项
+   ------------------------------------------------------------
+   英文和中文的排版要求不一样：
+   · 大写字母视觉上更宽更高，所以标题统一转大写后，字距要放松一点点
+   · 英文的行高可以比中文紧（中文需要更多行距才好读）
+   · mono 小字本来就是大写，字距收一点，读起来才是"标签"而不是"被拉长"
+   ============================================================ */
+html[lang='en'] .sec-head__title,
+html[lang='en'] .windex__title,
+html[lang='en'] .detail__title,
+html[lang='en'] .dnotes__title,
+html[lang='en'] .contact__title,
+html[lang='en'] .work__title,
+html[lang='en'] .wcard__title,
+html[lang='en'] .cap__title,
+html[lang='en'] .dnote__title,
+html[lang='en'] .job__company,
+html[lang='en'] .about__head h3,
+html[lang='en'] .windex__cta-text h2,
+html[lang='en'] .detail__empty h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+}
+
+html[lang='en'] .sec-head__desc,
+html[lang='en'] .about__bio p,
+html[lang='en'] .job__point,
+html[lang='en'] .work__desc,
+html[lang='en'] .windex__desc,
+html[lang='en'] .detail__desc,
+html[lang='en'] .dnotes__idea p,
+html[lang='en'] .dnote__desc,
+html[lang='en'] .contact__desc {
+  line-height: 1.72;
+}
+
+html[lang='en'] .mono,
+html[lang='en'] .kicker,
+html[lang='en'] .sec-head__title-en {
+  letter-spacing: 0.14em;
+}

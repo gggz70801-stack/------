@@ -1,0 +1,3 @@
+# Vite 依赖 esbuild 的安装脚本，pnpm 11 需在此显式允许
+allowBuilds:
+  esbuild: true

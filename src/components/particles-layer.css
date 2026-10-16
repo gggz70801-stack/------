@@ -1,0 +1,37 @@
+/*
+  粒子背景层
+  -------------------------------------------------------------
+  · 整层压在正文之下（z-index: -1），不接收鼠标事件 → 永远不会挡字、挡点击
+  · 固定在视口上，首屏（头图）不显示，滚过一屏之后才淡入
+  · 上下两端做羽化，避免出现一条生硬的边界线
+*/
+
+.page-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.8s linear;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 16%,
+    #000 84%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+}
+
+/* 滚过首屏之后才露面 */
+.page-particles.is-on {
+  opacity: 1;
+}
+
+/* 小屏和"减少动效"环境下直接不加载：省电，也不打扰阅读 */
+@media (max-width: 720px), (prefers-reduced-motion: reduce) {
+  .page-particles {
+    display: none;
+  }
+}

@@ -1,0 +1,241 @@
+/* ============================================================
+   首屏 · 电影海报式
+   全幅视频铺满整屏，文字组压在画面下方：
+   姓名 → 巨字标题 → 底部标语（白色、全大写、无描边）
+   文字与画面之间用渐隐 + 羽化对比区融合，不出现硬边黑条
+   ============================================================ */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: #050302;
+  overflow: hidden;
+}
+
+/* ---------- 全幅画面层 ---------- */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.poster__art,
+.hero__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.poster__art {
+  transform: scale(1.02);
+}
+
+.hero__image {
+  /* 贴顶对齐：完整保留人物头部 */
+  object-fit: cover;
+  object-position: center top;
+  background: transparent;
+}
+
+/* 底部渐隐：白字落在画面自身变暗的区域里 */
+.hero__bloom {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      0deg,
+      rgba(6, 2, 1, 0.86) 0%,
+      rgba(6, 2, 1, 0.5) 16%,
+      rgba(6, 2, 1, 0.18) 30%,
+      rgba(6, 2, 1, 0) 44%
+    ),
+    linear-gradient(180deg, rgba(6, 2, 1, 0.6) 0%, rgba(6, 2, 1, 0.16) 12%, rgba(6, 2, 1, 0) 22%);
+}
+
+/* 暗角 */
+.hero__grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    122% 110% at 50% 46%,
+    rgba(10, 1, 0, 0) 42%,
+    rgba(10, 1, 0, 0.34) 76%,
+    rgba(10, 1, 0, 0.74) 100%
+  );
+}
+
+/**
+ * 文字背后的羽化对比区：
+ * backdrop-filter 把画面在文字后轻微压暗、柔化，边缘用 mask 渐隐，
+ * 这样文字读得清，但看不到任何"框"。
+ */
+.hero__veil {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42%;
+  pointer-events: none;
+  backdrop-filter: blur(2px) brightness(0.58) saturate(0.94);
+  -webkit-backdrop-filter: blur(2px) brightness(0.58) saturate(0.94);
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.4) 26%,
+    #000 56%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.4) 26%,
+    #000 56%,
+    #000 100%
+  );
+}
+
+/* ---------- 文字组：底部对齐 ---------- */
+.poster {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: clamp(72px, 6vw, 92px) var(--pad) clamp(22px, 2.8vw, 42px);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* 巨字标题：横跨整幅画面 */
+.poster__title {
+  width: 100%;
+  margin: 0;
+  opacity: 0;
+  animation: posterIn 1.2s var(--ease) 1.4s forwards;
+}
+
+/* 巨字标题容器（TechText 画在 canvas 上，需要给定高度） */
+.poster__title .tech-text {
+  height: clamp(110px, 12vw, 250px);
+  /* .poster 整体是 pointer-events:none（不吃鼠标），这里单独把标题放开，才有字母交互 */
+  pointer-events: auto;
+  color: #ffffff;
+  font-family: var(--font-display);
+}
+
+.poster__title .tech-text-canvas {
+  /* 柔和投影（不是描边）：让白字与画面自然拉开层次 */
+  filter: drop-shadow(0 6px 26px rgba(5, 1, 0, 0.72));
+}
+
+/* 底部标语 */
+.poster__tagline {
+  margin: clamp(12px, 1.4vw, 22px) 0 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(15px, 1.45vw, 29px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 22px rgba(6, 1, 0, 0.85);
+  opacity: 0;
+  animation: posterIn 1.1s var(--ease) 2s forwards;
+}
+
+@keyframes posterIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster__title,
+  .poster__tagline {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .poster {
+    padding-bottom: 20px;
+  }
+  .hero__veil {
+    height: 46%;
+  }
+}
+
+/* ---------- 矢量海报内部的逆光描边（视频未就绪时的兜底画面） ---------- */
+.poster__art .poster__rim,
+.poster__art .poster__rock,
+.poster__art .poster__figure path,
+.poster__art .poster__figure circle {
+  stroke: url(#hp-rim);
+  stroke-width: 1.1;
+  stroke-opacity: 0.5;
+  stroke-linejoin: round;
+}
+
+.poster__art .poster__rock {
+  stroke-opacity: 0.42;
+}
+
+.poster__art .poster__figure path,
+.poster__art .poster__figure circle {
+  fill: #090101;
+  stroke-opacity: 0.85;
+  stroke-width: 1.3;
+}
+
+.poster__float {
+  animation: posterFloat 13s ease-in-out infinite;
+}
+
+.poster__float--b {
+  animation-duration: 17s;
+  animation-delay: -3s;
+}
+
+.poster__float--c {
+  animation-duration: 21s;
+  animation-delay: -7s;
+}
+
+@keyframes posterFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -13px, 0);
+  }
+}
+
+.poster__dust {
+  animation: posterDust 24s ease-in-out infinite;
+}
+
+@keyframes posterDust {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(-16px, -10px, 0);
+    opacity: 1;
+  }
+}

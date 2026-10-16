@@ -1,0 +1,551 @@
+/* ============================================================
+   作品详情页
+   ============================================================ */
+
+.detail {
+  padding-top: 132px;
+  min-height: 100vh;
+}
+
+/*
+  详情页顶部：两栏
+    左 = 作品名 / 定位 / 说明 / 标签
+    右 = 项目信息（类型、时间、角色、交付）
+  原来三块各占一整行、留白又大，整屏显得很空；并成两栏之后一口气就能读完。
+*/
+.detail__head .shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  column-gap: clamp(28px, 3.6vw, 64px);
+  align-items: start;
+  padding-bottom: clamp(20px, 2vw, 30px);
+}
+
+.detail__back,
+.detail__meta {
+  grid-column: 1 / -1;
+}
+
+.detail__lead {
+  grid-column: 1;
+}
+
+.detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+  transition: color 0.35s var(--ease), gap 0.35s var(--ease);
+}
+
+.detail__back svg {
+  width: 14px;
+  height: 14px;
+}
+
+.detail__back:hover {
+  color: var(--accent);
+  gap: 14px;
+}
+
+.detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: clamp(22px, 2.4vw, 36px);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-mute);
+}
+
+.detail__title {
+  margin-top: clamp(16px, 1.6vw, 24px);
+  font-size: var(--fs-page);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+
+.detail__subtitle {
+  margin-top: 12px;
+  color: var(--accent);
+}
+
+.detail__desc {
+  margin-top: clamp(12px, 1.3vw, 18px);
+  max-width: 34em;
+  color: var(--text-dim);
+  font-size: var(--fs-body);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.detail__tags li {
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: var(--fs-caption);
+  color: var(--text-dim);
+}
+
+/* ---------- 项目信息栏（在标题右侧） ---------- */
+.detail__facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(11px, 1.1vw, 16px);
+  margin-top: clamp(16px, 1.6vw, 24px);
+  padding-left: clamp(22px, 2.4vw, 40px);
+  border-left: 1px solid var(--line);
+}
+
+/* 一行一条：左边标签（mono），右边内容——像参数表那样一眼扫完 */
+.detail__fact {
+  display: grid;
+  grid-template-columns: minmax(88px, auto) minmax(0, 1fr);
+  gap: 3px 16px;
+  align-items: baseline;
+}
+
+.detail__fact strong {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.detail__fact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-dim);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+
+.detail__fact-list li {
+  position: relative;
+  padding-left: 15px;
+}
+
+.detail__fact-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+/* ---------- 画廊 ---------- */
+.detail__gallery-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: clamp(14px, 1.4vw, 22px) 0;
+}
+
+/* ---------- 设计思路 ---------- */
+.dnotes {
+  padding-block: clamp(26px, 2.6vw, 40px) clamp(22px, 2.2vw, 34px);
+  border-bottom: 1px solid var(--line);
+}
+
+/* 标题 ‖ 正文 并排 */
+.dnotes__top {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+  gap: clamp(24px, 3vw, 64px);
+  align-items: start;
+}
+
+.dnotes__head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dnotes__title {
+  font-size: var(--fs-block);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.dnotes__idea {
+  margin-top: 0;
+}
+
+.dnotes__idea p {
+  color: var(--text-dim);
+  font-size: var(--fs-body);
+  line-height: 1.85;
+  /* 行宽要收：这里原来铺满整栏，中文一行能到 60 多字，读起来会跳行 */
+  max-width: 36em;
+  text-wrap: pretty;
+}
+
+.dnotes__points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.2vw, 42px);
+  margin-top: clamp(20px, 2vw, 30px);
+  padding-top: clamp(16px, 1.6vw, 24px);
+  border-top: 1px solid var(--line);
+}
+
+.dnote {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 同 .work__index：元素带 .mono，需要父级限定才能覆盖它的字号 */
+.dnote .dnote__num {
+  color: var(--accent);
+  font-size: var(--fs-index-md);
+  letter-spacing: 0.08em;
+}
+
+.dnote__title {
+  font-size: var(--fs-item);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.dnote__desc {
+  color: var(--text-dim);
+  font-size: var(--fs-small);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+/* 页面模块顺序：一条走下来就是详情页的阅读节奏 */
+.dflow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(14px, 1.8vw, 30px);
+  margin-top: clamp(18px, 1.8vw, 26px);
+  padding: clamp(14px, 1.4vw, 18px) clamp(16px, 1.6vw, 22px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0));
+}
+
+.dflow__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 18px);
+}
+
+.dflow__list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-small);
+  color: var(--text);
+}
+
+.dflow__list li .mono {
+  color: var(--accent);
+  font-size: var(--fs-micro);
+}
+
+.dflow__list li + li::before {
+  content: '→';
+  margin-right: clamp(4px, 1vw, 12px);
+  color: var(--text-mute);
+}
+
+.detail__gallery {
+  border-top: 1px solid var(--line);
+  margin-top: clamp(8px, 0.9vw, 14px);
+}
+
+/*
+  作品图：宽度对齐版心（1700px），比原来的 1180px 铺满得多；
+  上下留白压到很小的间距，让"每一屏"尽量占满画面、衔接更紧凑。
+  素材侧同步把详情图重新导出到 1700px 宽（母版本来就是 1700），保证 1:1 不虚。
+*/
+.detail__shot {
+  position: relative;
+  margin: 0 auto;
+  padding: clamp(8px, 0.8vw, 14px) var(--pad);
+  max-width: calc(var(--shell) + var(--pad) * 2);
+}
+
+.detail__shot + .detail__shot {
+  border-top: 1px solid var(--line);
+}
+
+.detail__shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #14100c;
+  box-shadow: 0 40px 90px -70px rgba(0, 0, 0, 0.9);
+}
+
+.detail__shot figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 10px;
+  color: var(--text-mute);
+}
+
+.detail__shot-caption {
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ---------- 杂志式画廊（社媒海报这类多规格物料） ---------- */
+.detail__gallery--grid {
+  columns: 3;
+  column-gap: clamp(14px, 1.6vw, 24px);
+  max-width: calc(var(--shell) + var(--pad) * 2);
+  margin-inline: auto;
+  padding: clamp(8px, 0.8vw, 14px) var(--pad);
+}
+
+.detail__gallery--grid .detail__shot {
+  break-inside: avoid;
+  margin: 0 0 clamp(10px, 1.1vw, 16px);
+  padding: 0;
+  max-width: none;
+  border-top: 0;
+}
+
+.detail__gallery--grid .detail__shot + .detail__shot {
+  border-top: 0;
+}
+
+.detail__gallery--grid .detail__shot img {
+  border-radius: 12px;
+  box-shadow: 0 30px 60px -52px rgba(0, 0, 0, 0.95);
+  transition: transform 0.9s var(--ease), border-color 0.5s var(--ease);
+}
+
+.detail__gallery--grid .detail__shot:hover img {
+  transform: translateY(-3px);
+  border-color: rgba(var(--accent-rgb), 0.28);
+}
+
+.detail__gallery--grid .detail__shot-index {
+  display: none;
+}
+
+.detail__gallery--grid .detail__shot figcaption {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+/* ---------- 空状态 ---------- */
+.detail__empty {
+  margin-block: clamp(40px, 5vw, 72px);
+  padding: clamp(28px, 3.4vw, 52px);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0));
+}
+
+.detail__empty h2 {
+  margin-top: 14px;
+  font-size: clamp(20px, 1.6vw, 26px);
+  font-weight: 500;
+}
+
+.detail__empty p {
+  margin-top: 14px;
+  max-width: 40em;
+  color: var(--text-dim);
+  font-size: var(--fs-body);
+  text-wrap: pretty;
+  line-height: 1.9;
+}
+
+.detail__empty code {
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--accent);
+}
+
+.detail__empty-note {
+  font-size: var(--fs-caption) !important;
+  color: var(--text-mute) !important;
+}
+
+.detail__empty-text {
+  margin-block: 80px 24px;
+  color: var(--text-dim);
+}
+
+/* ---------- 上一个 / 下一个 ---------- */
+.detail__pager {
+  border-top: 1px solid var(--line);
+}
+
+.detail__pager-inner {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.detail__pager-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(28px, 3.4vw, 52px) 0;
+  transition: background-color 0.45s var(--ease);
+}
+
+.detail__pager-item + .detail__pager-item {
+  padding-left: clamp(20px, 3vw, 54px);
+  border-left: 1px solid var(--line);
+}
+
+.detail__pager-item:first-child {
+  padding-right: clamp(20px, 3vw, 54px);
+}
+
+.detail__pager-item--next {
+  text-align: right;
+}
+
+.detail__pager-item .mono {
+  color: var(--text-mute);
+}
+
+.detail__pager-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.detail__pager-item--next .detail__pager-row {
+  justify-content: flex-end;
+}
+
+.detail__pager-thumb {
+  flex: 0 0 auto;
+  width: 92px;
+  aspect-ratio: 16 / 10;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: #14100c;
+  overflow: hidden;
+}
+
+.detail__pager-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.72;
+  transition: opacity 0.4s var(--ease), transform 0.7s var(--ease);
+}
+
+.detail__pager-item:hover .detail__pager-thumb img {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.detail__pager-item strong {
+  font-size: clamp(17px, 1.3vw, 24px);
+  font-weight: 500;
+  transition: color 0.35s var(--ease);
+}
+
+.detail__pager-item:hover strong {
+  color: var(--accent);
+}
+
+/* ---------- 页脚 ---------- */
+.detail__foot {
+  border-top: 1px solid var(--line);
+}
+
+.detail__foot-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  padding-block: 26px;
+  color: var(--text-mute);
+}
+
+.detail__foot-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.detail__top {
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.35s var(--ease);
+}
+
+.detail__top:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 1100px) {
+  .detail__head .shell,
+  .dnotes__top {
+    grid-template-columns: 1fr;
+  }
+  .detail__facts {
+    margin-top: clamp(20px, 2vw, 28px);
+    padding-left: 0;
+    border-left: 0;
+    padding-top: clamp(18px, 1.8vw, 24px);
+    border-top: 1px solid var(--line);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .dnotes__points {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .detail__gallery--grid {
+    columns: 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .detail {
+    padding-top: 108px;
+  }
+  .detail__gallery--grid {
+    columns: 1;
+  }
+  .detail__pager-inner {
+    grid-template-columns: 1fr;
+  }
+  .detail__pager-item + .detail__pager-item {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .detail__pager-item--next {
+    text-align: left;
+  }
+}

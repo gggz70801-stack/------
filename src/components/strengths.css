@@ -1,0 +1,133 @@
+.strengths__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: clamp(40px, 4.4vw, 68px);
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.cap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* 卡片原来偏高，下半张空着；收到刚好装下内容的高度 */
+  min-height: clamp(212px, 17vw, 256px);
+  padding: clamp(26px, 2.6vw, 40px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0));
+  overflow: hidden;
+  transition: background-color 0.55s var(--ease);
+}
+
+.cap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(90% 70% at 50% 110%, rgba(var(--accent-rgb), 0.14), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+
+.cap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transition: width 0.7s var(--ease);
+}
+
+.cap:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.cap:hover::before {
+  opacity: 1;
+}
+
+.cap:hover::after {
+  width: 72%;
+}
+
+.cap__top {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cap__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--accent);
+  transition: transform 0.6s var(--ease), border-color 0.5s var(--ease),
+    background-color 0.5s var(--ease);
+}
+
+.cap__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.cap:hover .cap__icon {
+  transform: translateY(-4px) rotate(-3deg);
+  border-color: rgba(var(--accent-rgb), 0.4);
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* 同 .work__index：元素带 .mono，需要父级限定才能覆盖它的字号 */
+.cap__top .cap__index {
+  color: var(--text-mute);
+  font-size: var(--fs-index-lg);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding-top: 6px;
+}
+
+.cap__title {
+  position: relative;
+  margin-top: clamp(24px, 2.8vw, 38px);
+  font-size: clamp(21px, 1.6vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.cap__en {
+  position: relative;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.2em;
+}
+
+.cap__desc {
+  position: relative;
+  margin-top: 16px;
+  color: var(--text-dim);
+  /* 卡片正文提一档：三栏并排时，15px 的正文配 40px 的内边距会显得卡片"空" */
+  font-size: clamp(15.5px, 1.05vw, 16.5px);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+@media (max-width: 1080px) {
+  .strengths__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .strengths__grid {
+    grid-template-columns: 1fr;
+  }
+}
