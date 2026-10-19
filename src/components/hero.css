@@ -124,7 +124,7 @@
 
 /* 巨字标题容器（TechText 画在 canvas 上，需要给定高度） */
 .poster__title .tech-text {
-  height: clamp(110px, 12vw, 250px);
+  height: clamp(122px, 13vw, 272px);
   /* .poster 整体是 pointer-events:none（不吃鼠标），这里单独把标题放开，才有字母交互 */
   pointer-events: auto;
   color: #ffffff;
@@ -138,11 +138,12 @@
 
 /* 底部标语 */
 .poster__tagline {
-  margin: clamp(12px, 1.4vw, 22px) 0 0;
+  margin: clamp(14px, 1.55vw, 24px) 0 0;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(15px, 1.45vw, 29px);
-  letter-spacing: 0.04em;
+  font-size: clamp(17px, 1.65vw, 34px);
+  line-height: 1.1;
+  letter-spacing: 0.055em;
   text-transform: uppercase;
   color: #fff;
   text-shadow: 0 2px 22px rgba(6, 1, 0, 0.85);
@@ -226,6 +227,11 @@
 
 .poster__dust {
   animation: posterDust 24s ease-in-out infinite;
+}
+
+.hero:not(.is-on-screen) .poster__float,
+.hero:not(.is-on-screen) .poster__dust {
+  animation-play-state: paused;
 }
 
 @keyframes posterDust {

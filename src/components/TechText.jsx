@@ -8,6 +8,7 @@ const SPRING = 320;
 const INHERIT = /^(currentcolor|inherit)$/i;
 const INTRO_DELAY = 0.15;
 const KICK_DECAY = 0.62;
+const MIN_FRAME_MS = 1000 / 30;
 
 const approach = (current, target, dt, seconds) => current + (target - current) * (1 - Math.exp(-dt / seconds));
 
@@ -129,6 +130,10 @@ const TechText = ({
     let introducing = false;
     let fontsReady = !document.fonts;
     let guideAlpha = 0;
+    let familyCacheKey = '';
+    let familyCacheValue = '';
+    let paletteCacheKey = '';
+    let paletteCacheValue = null;
     const kicks = [];
     const press = { x: 0, y: 0, time: 0, index: -1 };
     const pointer = { x: 0, y: 0, inside: false };
@@ -146,13 +151,29 @@ const TechText = ({
       refreshFonts();
     };
 
-    const family = s => s.fontFamily || getComputedStyle(container).fontFamily || 'sans-serif';
+    const family = s => {
+      const key = s.fontFamily || '';
+      if (key === familyCacheKey && familyCacheValue) return familyCacheValue;
+      familyCacheKey = key;
+      familyCacheValue = s.fontFamily || getComputedStyle(container).fontFamily || 'sans-serif';
+      return familyCacheValue;
+    };
     const fontFor = (s, size) => `${s.fontWeight} ${size}px ${family(s)}`;
 
     const palette = s => {
+      const key = `${s.color}|${s.accentColor}`;
+      if (key === paletteCacheKey && paletteCacheValue) return paletteCacheValue;
       const current = getComputedStyle(container).color || '#000000';
       const pick = value => (!value || INHERIT.test(String(value).trim()) ? current : value);
-      return { ink: pick(s.color), accent: pick(s.accentColor) };
+      paletteCacheKey = key;
+      paletteCacheValue = { ink: pick(s.color), accent: pick(s.accentColor) };
+      return paletteCacheValue;
+    };
+
+    const invalidateThemeCache = () => {
+      familyCacheKey = '';
+      paletteCacheKey = '';
+      wakeRef.current();
     };
 
     const setFont = (target, s, size) => {
@@ -678,6 +699,11 @@ const TechText = ({
 
     const tick = now => {
       raf = 0;
+      if (!visible || !alive) return;
+      if (now - last < MIN_FRAME_MS - 1) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       const s = settingsRef.current;
       if (!s) return;
       const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
@@ -877,7 +903,7 @@ const TechText = ({
     const resize = () => {
       width = Math.max(1, container.clientWidth);
       height = Math.max(1, container.clientHeight);
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       layoutKey = '';
@@ -953,12 +979,12 @@ const TechText = ({
       wake();
     });
     intersectionObserver.observe(container);
-    const themeObserver = new MutationObserver(wake);
+    const themeObserver = new MutationObserver(invalidateThemeCache);
     for (const node of [document.documentElement, document.body]) {
       if (node) themeObserver.observe(node, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] });
     }
     const schemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
-    schemeQuery?.addEventListener?.('change', wake);
+    schemeQuery?.addEventListener?.('change', invalidateThemeCache);
     if (document.fonts) document.fonts.ready.then(fontsLoaded, fontsLoaded);
 
     resize();
@@ -970,7 +996,7 @@ const TechText = ({
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       themeObserver.disconnect();
-      schemeQuery?.removeEventListener?.('change', wake);
+      schemeQuery?.removeEventListener?.('change', invalidateThemeCache);
       container.style.cursor = '';
       container.removeEventListener('pointermove', onMove);
       container.removeEventListener('pointerenter', onMove);

@@ -3,8 +3,20 @@
    ============================================================ */
 
 .detail {
-  padding-top: 132px;
+  padding-top: 104px;
   min-height: 100vh;
+}
+
+.detail__head {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail__backdrop {
+  position: absolute;
+  inset: 0;
 }
 
 /*
@@ -14,11 +26,14 @@
   原来三块各占一整行、留白又大，整屏显得很空；并成两栏之后一口气就能读完。
 */
 .detail__head .shell {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
   column-gap: clamp(28px, 3.6vw, 64px);
   align-items: start;
-  padding-bottom: clamp(20px, 2vw, 30px);
+  padding-top: clamp(18px, 1.8vw, 26px);
+  padding-bottom: clamp(16px, 1.6vw, 24px);
 }
 
 .detail__back,
@@ -53,15 +68,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
-  margin-top: clamp(22px, 2.4vw, 36px);
+  margin-top: clamp(14px, 1.6vw, 24px);
   padding-bottom: 14px;
   border-bottom: 1px solid var(--line);
   color: var(--text-mute);
 }
 
 .detail__title {
-  margin-top: clamp(16px, 1.6vw, 24px);
-  font-size: var(--fs-page);
+  margin-top: clamp(10px, 1.1vw, 16px);
+  font-size: var(--fs-section);
   line-height: 1.14;
   letter-spacing: -0.02em;
   font-weight: 500;
@@ -73,11 +88,11 @@
 }
 
 .detail__desc {
-  margin-top: clamp(12px, 1.3vw, 18px);
+  margin-top: clamp(9px, 1vw, 14px);
   max-width: 34em;
   color: var(--text-dim);
-  font-size: var(--fs-body);
-  line-height: 1.85;
+  font-size: var(--fs-small);
+  line-height: 1.8;
   text-wrap: pretty;
 }
 
@@ -85,7 +100,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 13px;
 }
 
 .detail__tags li {
@@ -101,9 +116,15 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(11px, 1.1vw, 16px);
-  margin-top: clamp(16px, 1.6vw, 24px);
+  margin-top: clamp(10px, 1.2vw, 18px);
   padding-left: clamp(22px, 2.4vw, 40px);
+  padding-right: clamp(8px, 1vw, 16px);
   border-left: 1px solid var(--line);
+  background: linear-gradient(
+    90deg,
+    rgba(7, 5, 4, 0.04),
+    rgba(7, 5, 4, 0.5)
+  );
 }
 
 /* 一行一条：左边标签（mono），右边内容——像参数表那样一眼扫完 */
@@ -119,6 +140,10 @@
   font-weight: 500;
   line-height: 1.45;
   letter-spacing: -0.005em;
+}
+
+.detail__fact > .mono {
+  color: var(--text-dim);
 }
 
 .detail__fact-list {
@@ -457,14 +482,14 @@
 .detail__pager-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   opacity: 0.72;
-  transition: opacity 0.4s var(--ease), transform 0.7s var(--ease);
+  transition: opacity 0.4s var(--ease), filter 0.7s var(--ease);
 }
 
 .detail__pager-item:hover .detail__pager-thumb img {
   opacity: 1;
-  transform: scale(1.05);
+  filter: brightness(1.06);
 }
 
 .detail__pager-item strong {

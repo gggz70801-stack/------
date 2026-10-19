@@ -332,7 +332,7 @@ export default function HoloCard({
   hoverScale = 1.04,
   idle = true,
   shadow = true,
-  maxDpr = 2,
+  maxDpr = 1.5,
   imgLoading = 'lazy',
   className = '',
   style,
@@ -349,6 +349,7 @@ export default function HoloCard({
   const [ratio, setRatio] = useState(CARD_RATIO)
   const [ready, setReady] = useState(false)
   const [flipped, setFlipped] = useState(false)
+  const [active, setActive] = useState(false)
   const flippable = Boolean(backImage)
 
   settingsRef.current = {
@@ -375,6 +376,26 @@ export default function HoloCard({
   }, [image])
 
   useEffect(() => {
+    const root = rootRef.current
+    if (!root) return undefined
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setActive(true)
+      return undefined
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return
+        setActive(true)
+        observer.disconnect()
+      },
+      { rootMargin: '120px 0px' }
+    )
+    observer.observe(root)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!active) return undefined
     const root = rootRef.current
     const rotor = rotorRef.current
     const canvas = canvasRef.current
@@ -624,7 +645,7 @@ export default function HoloCard({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [active, maxDpr])
 
   const track = (e) => {
     if (e.pointerType === 'touch' && e.type === 'pointermove' && !e.buttons) return

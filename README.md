@@ -28,6 +28,28 @@ pnpm preview     # 预览打包结果 http://127.0.0.1:4173
 
 中英切换：`src/lib/lang.js`（语言状态）+ `src/lib/content.js`（取文案），按钮在导航栏右上角。
 
+### 其他项目页面
+
+首页「其他项目」和作品列表页里的分类切换都可以进入 `#/other`。里面分成五个类别：
+
+| 类别 | 入口 | 子页面 |
+| --- | --- | --- |
+| 国内电商 | `#/other/domestic-ecommerce` | 创意型 `#/other/domestic-ecommerce/creative` / 统一风格 `#/other/domestic-ecommerce/consistent` |
+| 网页设计 | `#/other/web-design` | 亚马逊 `#/other/web-design/amazon` / 速卖通 `#/other/web-design/aliexpress` |
+| 插画 | `#/other/illustration` | 故宫祥瑞专题长页 |
+| 物料 | `#/other/materials` | 28 页产品画册 + 中英双语展会折页 |
+| 3D 建模渲染 | `#/other/3d-rendering` | Blender 基础建模与渲染练习 |
+
+素材流程：
+
+```bash
+pnpm media:social   # 同步“社交媒体”新增图并压缩
+pnpm media:other    # 渲染参考 PDF，再生成其他项目 WebP 与尺寸清单
+```
+
+“其他项目”的网页图在 `src/assets/other/`，尺寸清单在 `src/data/other-gallery.json`；
+原始 PDF、PSD 和大图仍留在 `E:\作品集\作品集素材\`，不会进入构建产物。
+
 ### 作品列表页 / 详情页怎么走
 
 ```
@@ -119,11 +141,12 @@ node scripts/screenshot.mjs "!works"                  # 首页滚到「作品集
 ```bash
 pnpm media:image    # 图片：media-src/ → src/assets/works（自动压缩 + 生成尺寸清单）
 pnpm media:video    # 视频：原片 → public/media（1080p、≤12MB）+ 静帧 poster
-pnpm size           # 体检：列出最重的文件，超预算报警
+pnpm media:backdrops # 项目详情页战术背景：压暗、柔化并转 WebP
+pnpm size           # 体检：单文件与整站 dist 超预算都会报警
 ```
 
-**当前作品素材**：6 个 ACEBEAM 产品详情页 + 1 套海外社媒物料，共 **105 张 WebP / 8.1MB**
-（原图 22MB+）；其中 H18 与 UC3A 各有一段 **4 帧动画 WebP**（GIF 转换而来，动画保留）。
+**当前作品素材**：6 个 ACEBEAM 产品详情页 + 1 套 46 张海外社媒物料，共 **121 张 WebP / 约 14.1MB**
+（原图约 40.6MB）；其中 H18 与 UC3A 各有一段 **4 帧动画 WebP**（GIF 转换而来，动画保留）。
 人物照片 56KB、3 张获奖证书共 228KB。压缩前后对照见 `pnpm media:image` 的输出。
 
 压图脚本的几个细节（都在 `scripts/optimize-images.mjs` 里）：
@@ -133,8 +156,8 @@ pnpm size           # 体检：列出最重的文件，超预算报警
 - 尺寸清单 `src/data/gallery.json` 按作品合并写入，处理一个作品不会清掉别的记录；
 - 其它分组的图会保留子目录（`media-src/awards/x.jpg` → `src/assets/misc/awards/x.webp`）。
 
-**当前首屏视频**：原片 38.2s / 1920×1080 / 92.9MB → 10s / 1920×1080 / H.264 / **11.1MB**（分辨率未降），
-另生成 156KB 静帧。页面先显示静帧，浏览器空闲后再加载视频，所以打开速度不受 11MB 影响。
+**当前首屏视频**：原片 38.2s / 1920×1080 / 92.9MB → 10s / 1920×1080 / H.264 / **5.25MB**（分辨率未降），
+另生成 150KB 静帧。页面先显示静帧，浏览器空闲后再加载视频。
 
 **作品图怎么加**：把原图放进 `media-src/works/<slug>/`（文件名 `01-封面.jpg`、`02-详情.jpg` 排顺序），
 执行 `pnpm media:image`，图片会自动压缩进 `src/assets/works/<slug>/` 并在列表页、详情页自动出现，不需要改代码。
@@ -160,16 +183,8 @@ pnpm size           # 体检：列出最重的文件，超预算报警
 
 ### 4. 首屏背景：矢量海报 / 视频
 
-**当前状态：首屏用的是 `HeroPoster.jsx` 绘制的矢量海报，`public/media/` 里没有视频。**
-
-这是为了控制仓库与部署体积：原片 `bo3.mp4`（38s / 1920×1080 / **92.94 MB**）放进 `public/` 后，构建产物 `dist/` 会被撑到 93 MB。移除后：
-
-| 目录 | 移除前 | 移除后 |
-| --- | --- | --- |
-| `public/` | 92.94 MB | 0 MB |
-| `dist/`（部署产物） | 93.22 MB | 0.29 MB |
-
-原片仍保留在 `E:\作品集\ACEBEAM\封面\bo3.mp4`，需要时随时可以再启用。
+**当前状态：首屏使用循环视频 `hero-loop.mp4`（5.25MB）与静帧 `hero-poster.jpg`（150KB）；**
+视频加载完成前或失败时，`HeroPoster.jsx` 的矢量海报会自动兜底。原始 92.94MB 视频不进入项目。
 
 **重新启用视频背景：**
 
@@ -195,9 +210,10 @@ media-src/             原始母版（不进仓库、不参与构建）
   works/<作品名>/      产品详情页分段图（01- 排顺序）
   portrait/me.jpg      人物照片原图
   awards/              获奖证书原图
-public/                压缩后的静态资源（人像 / 首屏视频）
+public/                压缩后的静态资源（人像 / 首屏视频 / 静帧）
   portrait/portrait.webp
   media/hero-loop.mp4
+  media/hero-poster.jpg
 src/
   App.jsx              页面组装（首页 / #/works 列表页 / #/works/<slug> 详情页）
   main.jsx             入口
@@ -219,7 +235,20 @@ src/
 
 ## 体积预算（重要）
 
-现状（2026-10-16 实测）：`dist/` 约 **24.6 MB**（117 个文件，含 115 张压缩后的作品图），`public/` 约 **11.3 MB**（首屏视频 `hero-loop.mp4` 11.1 MB + 静帧 156 KB）。
+加入“其他项目”后，网页图库新增约 **19.5 MB**（179 个素材视图），全部按页面懒加载；原始 PDF、PSD 与大图仍留在项目外。
+
+本次实测 `dist/` 约 **39.8 MB**，其中首屏视频为 5.25 MB，其余主要是作品图与其他项目图库。
+所有单文件都在预算内，但整站比 30 MB 参考线高约 9.8 MB；
+若要严格压到 30 MB，优先把完整图库或视频迁到 CDN，不建议继续牺牲画面质量。
+
+## 部署上线
+
+项目已配置 GitHub Pages 自动部署。推送到 `master` 后，GitHub Actions 会安装依赖、运行生产构建，
+再把 `dist/` 发布到 Pages；也可以在仓库的 Actions 页面手动触发。
+
+首次上线时，在仓库 **Settings → Pages → Build and deployment → Source** 中选择 **GitHub Actions**。
+页面使用 Hash 路由，作品详情不需要额外的服务器重写规则；静态资源使用相对路径，
+因此既能放在 `https://<用户名>.github.io/<仓库名>/`，也能直接绑定独立域名。
 
 ### 该守的三条线
 
@@ -244,4 +273,4 @@ src/
 1. **原始大文件永远不要放进项目**：留在素材盘（如 `E:\作品集\ACEBEAM\封面\`），项目里只放网页版；
 2. **进项目前先过一遍预算**：视频 8–15 秒 / ≤ 10 MB，图片 WebP / ≤ 500 KB；
 3. **超大素材走外部托管**：CDN / 对象存储（OSS、COS、R2 等）放原片，`hero.video` 直接填完整 URL；
-4. **随手体检**：`pnpm size` 会列出最重的文件并对超预算的单文件报警（`pnpm build` 结束也会自动跑一次，只提示不阻塞）。
+4. **随手体检**：`pnpm size` 会列出最重的文件，并对超预算的单文件和整站 `dist` 报警（`pnpm build` 结束也会自动跑一次，只提示不阻塞）。

@@ -1,0 +1,68 @@
+.other-index {
+  padding-bottom: clamp(36px, 4vw, 72px);
+}
+
+.other-index__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: clamp(26px, 3vw, 44px);
+  color: var(--text-dim);
+  font-size: var(--fs-small);
+  transition: color 0.35s var(--ease), gap 0.35s var(--ease);
+}
+
+.other-index__back svg {
+  width: 15px;
+  height: 15px;
+}
+
+.other-index__back:hover {
+  gap: 14px;
+  color: var(--accent);
+}
+
+.other-index__grid {
+  padding-top: 0;
+  margin-top: clamp(28px, 3vw, 46px);
+  border-top: 1px solid var(--line);
+  padding-top: clamp(28px, 3vw, 44px);
+}
+
+.project-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(24px, 2.6vw, 38px);
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.project-switch a,
+.project-switch > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text-dim);
+  font-size: var(--fs-small);
+  transition: border-color 0.35s var(--ease), color 0.35s var(--ease),
+    background-color 0.35s var(--ease);
+}
+
+.project-switch a:hover {
+  border-color: var(--line-2);
+  color: var(--text);
+}
+
+.project-switch .is-active {
+  border-color: rgba(var(--accent-rgb), 0.35);
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--text);
+}
+
+.project-switch .mono {
+  color: var(--accent);
+}

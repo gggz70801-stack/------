@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import AnimatedContent from './AnimatedContent'
+import SectionPlate from './SectionPlate'
 import WorkVisual from './WorkVisual'
 import { getCover } from '../lib/gallery'
 import { navigate, rememberHomeScroll, rememberWorksOrigin } from '../lib/useHashRoute'
 import useContent from '../lib/content'
 import { sections } from '../data/profile'
+import worksBg from '../assets/section-bg/tactical/field-op.webp'
 import './works.css'
 
 export default function Works() {
@@ -24,6 +26,8 @@ export default function Works() {
 
   return (
     <section className="section works" id="works">
+      {/* 和「关于我 / 联系我」共用同一套低对比战术底纹语言。 */}
+      <SectionPlate className="works__bg" src={worksBg} width={1920} height={1080} />
       <div className="shell">
         <AnimatedContent className="sec-head" distance={40} blur={7} duration={0.95} threshold={0.15}>
           <div className="sec-head__left">

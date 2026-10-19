@@ -33,6 +33,39 @@
 }
 
 /* ---------- 工具条 ---------- */
+.works {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/*
+  首页「跨境电商项目」背景：只在上半页右侧露出一名夜训士兵，
+  到筛选区和作品列表时提前收暗，避免照片和产品封面互相争夺注意力。
+*/
+.works > .works__bg {
+  bottom: auto;
+  height: min(72vw, 980px);
+  --plate-opacity: 0.34;
+  --plate-blur: 2.8px;
+  --plate-brightness: 0.9;
+  --plate-contrast: 1.08;
+  --plate-saturate: 0.86;
+  --plate-focus: 68% 44%;
+  --plate-scan-opacity: 0.14;
+  --plate-mask: radial-gradient(
+    76% 72% at 76% 18%,
+    rgba(0, 0, 0, 0.96) 0%,
+    rgba(0, 0, 0, 0.58) 36%,
+    rgba(0, 0, 0, 0.2) 66%,
+    transparent 88%
+  );
+}
+
+.works > .shell {
+  position: relative;
+  z-index: 1;
+}
+
 .works__toolbar {
   display: flex;
   align-items: center;
@@ -173,12 +206,12 @@
 .work__media img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 1.2s var(--ease);
+  object-fit: contain;
+  transition: filter 0.7s var(--ease);
 }
 
 .work:hover .work__media img {
-  transform: scale(1.035);
+  filter: saturate(1.04) brightness(1.025);
 }
 
 .work__media-tag {

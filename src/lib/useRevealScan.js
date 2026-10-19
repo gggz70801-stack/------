@@ -26,15 +26,25 @@ export default function useRevealScan() {
       { threshold: 0.01, rootMargin: '0px 0px -8% 0px' }
     )
 
+    let scanRaf = 0
     const scan = () => nodes().forEach((n) => observer.observe(n))
+    const scheduleScan = () => {
+      if (scanRaf) return
+      scanRaf = requestAnimationFrame(() => {
+        scanRaf = 0
+        scan()
+      })
+    }
     scan()
 
-    const mutation = new MutationObserver(() => scan())
+    // 路由切换会在同一帧里连续插入很多节点，合并成一次扫描，避免重复遍历整页。
+    const mutation = new MutationObserver(scheduleScan)
     mutation.observe(document.body, { childList: true, subtree: true })
 
     return () => {
       observer.disconnect()
       mutation.disconnect()
+      if (scanRaf) cancelAnimationFrame(scanRaf)
     }
   }, [])
 }

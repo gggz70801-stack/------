@@ -1,5 +1,6 @@
 import AnimatedContent from './AnimatedContent'
 import Reveal from './Reveal'
+import ProjectBackdrop from './ProjectBackdrop'
 import { getCover, getGallery } from '../lib/gallery'
 import { goHomeTo, getWorksOrigin, navigate } from '../lib/useHashRoute'
 import useContent from '../lib/content'
@@ -68,6 +69,25 @@ export default function WorkDetail({ slug }) {
   const notes = project.notes
   const tags = tl(project.tags)
   const galleryLayout = project.detail?.gallery === 'grid' ? 'grid' : 'stack'
+  const backdropTone =
+    slug === 'uc3a-edc'
+      ? 'violet'
+      : slug === 'h18-headlamp'
+        ? 'cyan'
+        : slug === 'battery-6400'
+          ? 'red'
+          : slug === 'acebeam-social'
+            ? 'gold'
+            : 'amber'
+  const backdropVariant = {
+    'x35-searchlight': 'night-patrol',
+    'h18-headlamp': 'nvg-smoke',
+    'm1-terminator': 'night-flight',
+    'p20-mini': 'night-insertion',
+    'uc3a-edc': 'nvg-close',
+    'battery-6400': 'red-cabin',
+    'acebeam-social': 'hangar',
+  }[slug] || 'night-patrol'
 
   // 从首页点进来就回首页那块，从列表页点进来就回列表页
   const backToList = (event) => {
@@ -84,6 +104,11 @@ export default function WorkDetail({ slug }) {
   return (
     <article className="detail">
       <header className="detail__head">
+        <ProjectBackdrop
+          className="detail__backdrop"
+          variant={backdropVariant}
+          tone={backdropTone}
+        />
         <div className="shell">
           <a className="detail__back" href="#/works" onClick={backToList}>
             <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -195,7 +220,7 @@ export default function WorkDetail({ slug }) {
               <img
                 src={img.src}
                 alt={`${t(project.title)} ${i + 1}`}
-                loading={i < 2 ? 'eager' : 'lazy'}
+                loading="lazy"
                 decoding="async"
                 width={img.w || undefined}
                 height={img.h || undefined}
@@ -240,7 +265,14 @@ export default function WorkDetail({ slug }) {
             <span className="detail__pager-row">
               {prevCover ? (
                 <span className="detail__pager-thumb">
-                  <img src={prevCover.src} alt="" loading="lazy" decoding="async" />
+                  <img
+                    src={prevCover.src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width={prevCover.w || undefined}
+                    height={prevCover.h || undefined}
+                  />
                 </span>
               ) : null}
               <strong>{t(prev.title)}</strong>
@@ -259,7 +291,14 @@ export default function WorkDetail({ slug }) {
               <strong>{t(next.title)}</strong>
               {nextCover ? (
                 <span className="detail__pager-thumb">
-                  <img src={nextCover.src} alt="" loading="lazy" decoding="async" />
+                  <img
+                    src={nextCover.src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width={nextCover.w || undefined}
+                    height={nextCover.h || undefined}
+                  />
                 </span>
               ) : null}
             </span>

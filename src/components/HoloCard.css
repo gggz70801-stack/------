@@ -38,14 +38,12 @@
   background: rgba(0, 0, 0, 0.42);
   filter: blur(26px);
   pointer-events: none;
-  will-change: transform;
 }
 
 .holo-card__rotor {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  will-change: transform;
 }
 
 .holo-card__face {

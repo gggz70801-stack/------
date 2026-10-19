@@ -320,6 +320,7 @@ const Particles = ({
   opacity = 1,
   lightMode = false,
   paused = false,
+  frameRate = 60,
   className = '',
   style
 }) => {
@@ -355,7 +356,8 @@ const Particles = ({
     intro,
     opacity: clamp(opacity, 0, 1),
     lightMode,
-    paused
+    paused,
+    frameRate: clamp(frameRate, 24, 60)
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -746,14 +748,19 @@ const Particles = ({
       raf = 0;
       if (!visible || document.hidden) return;
       const s = settingsRef.current;
-      const dt = last ? clamp((now - last) / 1000, 0.0005, 0.05) : 1 / 60;
-      last = now;
       if (s.paused) {
         state.reveal = 1;
         render();
         last = 0;
         return;
       }
+      const frameInterval = 1000 / s.frameRate;
+      if (last && now - last < frameInterval - 1) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      const dt = last ? clamp((now - last) / 1000, 0.0005, 0.05) : 1 / 60;
+      last = now;
       const motion = reduce ? 0 : 1;
       const pace = dt * s.speed * motion;
       state.clock += pace;

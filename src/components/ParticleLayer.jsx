@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
-import Particles from './Particles'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import subscribeViewport from '../lib/scrollFrame'
 import './particles-layer.css'
+
+const Particles = lazy(() => import('./Particles'))
 
 /**
  * 页面背景 · 粒子场（React Bits <Particles />，WebGL 实现）
@@ -17,69 +19,54 @@ const REVEAL_AT = 0.55
 
 export default function ParticleLayer() {
   const [on, setOn] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // 系统开了"减少动效"就完全不加载
+    // 减少动效、小屏或省流量模式都不初始化 WebGL。
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    if (window.matchMedia('(max-width: 720px)').matches) return undefined
+    if (navigator.connection?.saveData) return undefined
 
-    let raf = 0
     const measure = () => {
-      raf = 0
-      setOn(window.scrollY > window.innerHeight * REVEAL_AT)
+      const next = window.scrollY > window.innerHeight * REVEAL_AT
+      setOn((current) => (current === next ? current : next))
+      if (next) setMounted(true)
     }
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(measure)
-    }
-
-    measure()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      if (raf) cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-    }
+    return subscribeViewport(measure)
   }, [])
 
   return (
     <div className={`page-particles${on ? ' is-on' : ''}`} aria-hidden="true">
-      <Particles
-        /* 密度：比官方默认（200）更稀，整屏大约一百多颗 */
-        particleCount={140}
-        particleSpread={11}
-        /* 动静：漂移速度压到默认的一半 */
-        speed={0.05}
-        /* 颜色：以白为主，掺一点点暖橙和冷蓝——和主色呼应，又不至于变成彩色噪点 */
-        particleColors={['#ffffff', '#ffc98f', '#8ea4ff']}
-        /* 颗粒：小、带随机大小、半透明 */
-        particleBaseSize={90}
-        sizeRandomness={1.1}
-        cameraDistance={22}
-        alphaParticles
-        /* 互动：光标把粒子轻轻推开（不是吸附） */
-        moveParticlesOnHover
-        particleHoverFactor={0.6}
-        hoverEffect="repel"
-        hoverRadius={160}
-        /* 星座连线：只在近距离粒子之间拉细线 */
-        connections
-        connectionDistance={130}
-        /*
-          光感：glow 是粒子自带的柔光；depthOfField 是"景深模糊"。
-          注意 depthOfField 一旦开大，靠近镜头的粒子会被糊成整屏白光（实测过），
-          这里必须留 0，柔和感交给 glow。
-        */
-        glow={0.25}
-        twinkle={0.25}
-        depthOfField={0}
-        /* 点击不炸开，避免干扰浏览 */
-        clickBurst={false}
-        intro
-        opacity={0.5}
-        pixelRatio={1.5}
-        /* 首屏期间冻结，滚下来再动 */
-        paused={!on}
-      />
+      {mounted ? (
+        <Suspense fallback={null}>
+          <Particles
+            /* 背景只做氛围：密度、倍率和帧率都压低，把资源留给正文。 */
+            particleCount={110}
+            particleSpread={11}
+            speed={0.05}
+            particleColors={['#ffffff', '#ffc98f', '#8ea4ff']}
+            particleBaseSize={90}
+            sizeRandomness={1.1}
+            cameraDistance={22}
+            alphaParticles
+            moveParticlesOnHover
+            particleHoverFactor={0.6}
+            hoverEffect="repel"
+            hoverRadius={160}
+            connections
+            connectionDistance={130}
+            glow={0.25}
+            twinkle={0.25}
+            depthOfField={0}
+            clickBurst={false}
+            intro
+            opacity={0.5}
+            pixelRatio={1.25}
+            frameRate={30}
+            paused={!on}
+          />
+        </Suspense>
+      ) : null}
     </div>
   )
 }

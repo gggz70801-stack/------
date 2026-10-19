@@ -12,13 +12,13 @@
 export const hero = {
   /* 首屏海报是「画面」的一部分，中英两种语言下保持一致 */
   poster: {
-    title: 'VISION IS COMING',
+    title: 'BINGJUN YUAN',
     name: 'BINGJUN YUAN',
     tagline: 'Craft Compelling Product Visuals',
   },
   image: '',
-  video: '/media/hero-loop.mp4',
-  posterImage: '/media/hero-poster.jpg',
+  video: './media/hero-loop.mp4',
+  posterImage: './media/hero-poster.jpg',
 }
 
 export const profile = {
@@ -34,30 +34,36 @@ export const profile = {
   school: { zh: '广东科技学院', en: 'Guangdong University of Science and Technology' },
   major: { zh: '视觉传达设计 · 本科', en: 'Visual Communication Design · BA' },
   classOf: { zh: '23 届', en: 'Class of 2023' },
-  portrait: '/portrait/portrait.webp',
+  portrait: './portrait/portrait.webp',
   about: {
     zh: [
       /* 学历单独摆在右边那张卡里了，这里就不再重复一遍「视觉传达设计本科」 */
-      '2023 年入行，从线下品牌物料一路做到跨境电商全链路视觉。',
-      '现在专注跨境方向：独立完成产品详情页、主图与海外社媒物料的视觉策划、排版落地与产品精修，让每一张图都服务于「被点击」和「被相信」。',
+      '2023 年入行，从线下品牌物料一路做到跨境与国内电商、平台店铺和品牌项目。',
+      '现在能独立完成详情页、店装、主图与社媒的策划、排版和精修，也做故宫祥瑞插画、品牌画册折页与 3D 渲染；让画面既服务「被点击」，也经得起「被相信」。',
     ],
     en: [
-      'In the industry since 2023 — from offline brand collateral to full-stack cross-border e-commerce visuals.',
-      'Today I focus on cross-border: I plan, lay out and retouch product detail pages, listing images and overseas social creatives on my own — every image serves one of two goals, getting clicked or getting trusted.',
+      'In the industry since 2023 — from offline brand collateral to cross-border and domestic e-commerce, storefronts and brand projects.',
+      'My work now spans cross-border and domestic e-commerce, marketplace storefronts, product pages and overseas social, alongside palace-inspired illustration, brand catalogues and 3D rendering. I can carry an idea from strategy and layout through retouching to a finished, usable delivery.',
     ],
   },
   focusTags: {
-    zh: ['跨境电商视觉', '产品详情页', '主图 / 社媒物料', '产品精修渲染'],
-    en: ['Cross-border visual', 'Product detail pages', 'Listing & social creatives', 'Retouch & rendering'],
+    zh: ['跨境电商视觉', '国内电商 / 平台店铺', '详情页 / 信息架构', '插画 / 品牌物料', '产品精修 / 3D 渲染'],
+    en: [
+      'Cross-border visual',
+      'Domestic e-commerce & storefronts',
+      'Product pages & IA',
+      'Illustration & collateral',
+      'Retouch & 3D',
+    ],
   },
   /** 个人技能（AI 工具 + 主流设计软件） */
   skills: {
-    zh: ['GPT', 'Midjourney', 'Flow', 'Photoshop', 'Illustrator', 'AI 视觉工具'],
-    en: ['GPT', 'Midjourney', 'Flow', 'Photoshop', 'Illustrator', 'Visual AI tools'],
+    zh: ['GPT', 'Midjourney', 'Flow', 'Photoshop', 'Illustrator', 'Blender', 'AI 视觉工具'],
+    en: ['GPT', 'Midjourney', 'Flow', 'Photoshop', 'Illustrator', 'Blender', 'Visual AI tools'],
   },
   contact: {
     phone: '15007612180',
-    wechat: 'YBJSZSD',
+    wechat: 'zaiykx',
     email: '1214168160@qq.com',
   },
 }
@@ -571,11 +577,11 @@ export const projects = [
     tags: { zh: ['海外社媒', '模板体系', '多规格投放'], en: ['Overseas social', 'Template system', 'Multi-format'] },
     metrics: {
       zh: [
-        { k: '物料张数', v: '31 张' },
+        { k: '物料张数', v: '46 张' },
         { k: '投放规格', v: '1:1 / 4:5 / 16:9' },
       ],
       en: [
-        { k: 'Creatives', v: '31 assets' },
+        { k: 'Creatives', v: '46 assets' },
         { k: 'Formats', v: '1:1 / 4:5 / 16:9' },
       ],
     },
@@ -583,8 +589,8 @@ export const projects = [
       role: { zh: '社媒视觉设计 · 版式模板', en: 'Social visual design · Layout system' },
       period: '2025 — 2026',
       deliverables: {
-        zh: ['社媒物料 31 张', '版式模板 3 套', '中英双语'],
-        en: ['31 social creatives', '3 layout templates', 'Bilingual'],
+        zh: ['社媒物料 46 张', '版式模板 3 套', '中英双语'],
+        en: ['46 social creatives', '3 layout templates', 'Bilingual'],
       },
       gallery: 'grid',
     },
@@ -624,6 +630,345 @@ export const projects = [
   },
 ]
 
+/**
+ * 其他项目：五个独立入口，每个入口都可以继续点进子项目。
+ * 图片通过 other-gallery.json + import.meta.glob 自动读取。
+ */
+const otherProjectsSource = [
+  {
+    index: '01',
+    slug: 'domestic-ecommerce',
+    coverGroup: 'domestic-creative',
+    covers: [
+      {
+        gallery: 'domestic-creative',
+        file: '34-X75-可以当封面.webp',
+        label: { zh: '创意型', en: 'Creative' },
+      },
+      {
+        gallery: 'domestic-consistent',
+        file: '51-x35-可以当封面.webp',
+        label: { zh: '统一型', en: 'Consistent' },
+      },
+    ],
+    year: '2026',
+    category: { zh: '国内电商', en: 'Domestic E-commerce' },
+    title: { zh: '双店铺 · 双风格运营实验', en: 'Two Stores · Two Visual Systems' },
+    subtitle: {
+      zh: 'Creative vs. Consistent · Data-led A/B testing',
+      en: '创意型 vs. 统一型 · 数据驱动的 A/B 测试',
+    },
+    desc: {
+      zh: '用两个独立店铺并行测试两套主图策略：创意型争取注意力，统一型承接搜索与快速比较。最终不靠审美偏好下结论，而用点击率、转化率、加购与投放回报持续复盘。',
+      en: 'Two independent stores test two listing-image strategies in parallel: creative visuals compete for attention, while a consistent system supports search traffic and fast comparison. Decisions are made with CTR, conversion, add-to-cart and return data, not taste alone.',
+    },
+    tags: {
+      zh: ['双店铺', 'A/B 测试', '主图策略'],
+      en: ['Two stores', 'A/B testing', 'Listing strategy'],
+    },
+    metrics: {
+      zh: [
+        { k: '独立店铺', v: '02' },
+        { k: '主图样本', v: '85' },
+      ],
+      en: [
+        { k: 'Stores', v: '02' },
+        { k: 'Listing samples', v: '85' },
+      ],
+    },
+    children: [
+      {
+        slug: 'consistent',
+        gallery: 'domestic-consistent',
+        coverFile: '51-x35-可以当封面.webp',
+        title: { zh: '统一风格主图', en: 'Consistent Listing System' },
+        subtitle: { zh: '稳定识别 · 支持快速比较', en: 'Recognisable · Easy to compare' },
+        desc: {
+          zh: '固定版式、标题区、参数区与品牌落款，让多型号商品形成稳定货架。适合承接搜索流量，降低用户比较成本，并支持运营快速扩品。',
+          en: 'A fixed layout, headline zone, specs and brand lockup create a stable product shelf. Built for search traffic, faster comparison and scalable operations.',
+        },
+        tags: { zh: ['统一版式', '搜索承接', '规模化'], en: ['Consistent layout', 'Search', 'Scalable'] },
+      },
+      {
+        slug: 'creative',
+        gallery: 'domestic-creative',
+        coverFile: '34-X75-可以当封面.webp',
+        title: { zh: '创意型主图', en: 'Creative Listing System' },
+        subtitle: { zh: '抢占注意力 · 放大场景张力', en: 'Stop the scroll · Amplify the scene' },
+        desc: {
+          zh: '用强场景、戏剧化光效与更自由的产品构图争夺点击。适合拉新、测试新品视觉上限，以及探索更具冲击力的内容表达。',
+          en: 'Strong scenes, dramatic light and freer product composition compete for the click. Built for acquisition, new-product exploration and finding the upper limit of visual impact.',
+        },
+        tags: { zh: ['创意主图', '场景张力', '拉新'], en: ['Creative', 'Scene tension', 'Acquisition'] },
+      },
+    ],
+    strategy: {
+      eyebrow: { zh: 'Strategy / 运营策略', en: '运营策略 / Strategy' },
+      title: { zh: '不是两套审美，而是两条转化路径', en: 'Not two looks — two conversion paths' },
+      lead: {
+        zh: '两个独立店铺，分别对应两种截然不同的视觉风格。把同一产品池放进不同店铺环境，是为了隔离变量：创意型负责探索流量获取能力，统一型负责验证稳定承接和规模化复制的效率。',
+        en: 'Two independent stores use two deliberately different visual systems. Putting the same product pool into separate store environments isolates the variables: the creative system explores traffic acquisition, while the consistent system tests stable conversion and scalable duplication.',
+      },
+      points: [
+        {
+          title: { zh: '01 / 独立经营，隔离变量', en: '01 / Separate stores, clean variables' },
+          desc: {
+            zh: '两个店铺独立运营、独立承接流量，避免同一店铺内的风格切换互相干扰，让主图策略的差异可以被单独观察。',
+            en: 'The stores operate independently so a change in visual direction does not contaminate the other test. Each image strategy can be observed on its own.',
+          },
+        },
+        {
+          title: { zh: '02 / 创意型：先赢得点击', en: '02 / Creative: win the click first' },
+          desc: {
+            zh: '通过场景冲突、光效和产品尺度制造视觉停顿，适合探索更高的点击率，也为新品建立更强的第一眼记忆。',
+            en: 'Scene contrast, light and scale create a visual pause. This path explores higher CTR and gives new products a stronger first impression.',
+          },
+        },
+        {
+          title: { zh: '03 / 统一型：再把理解变短', en: '03 / Consistent: shorten the decision' },
+          desc: {
+            zh: '统一标题、产品占位和信息顺序，让用户跨型号比较时不用重新学习版式；对搜索流量而言，熟悉感会直接降低决策成本。',
+            en: 'Shared headlines, product placement and information order remove relearning when comparing models. For search traffic, familiarity directly lowers decision cost.',
+          },
+        },
+        {
+          title: { zh: '04 / 用经营数据做裁决', en: '04 / Let operating data decide' },
+          desc: {
+            zh: '持续观察点击率、转化率、加购率、客单价与投放回报。哪种风格更优并不是固定答案，而会随品类、价位、流量来源和活动阶段变化。',
+            en: 'CTR, conversion, add-to-cart, AOV and ad return are reviewed continuously. There is no permanent winner; the better system changes with category, price, traffic source and campaign stage.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    index: '02',
+    slug: 'web-design',
+    coverGroup: 'web-amazon',
+    covers: [
+      { gallery: 'web-amazon', file: '01-主视觉-E75.webp' },
+    ],
+    year: '2025 — 2026',
+    category: { zh: '网页设计', en: 'Web Design' },
+    title: { zh: '平台店铺视觉系统', en: 'Platform Storefront Systems' },
+    subtitle: {
+      zh: 'Amazon A+ / AliExpress Storefront',
+      en: '亚马逊 A+ / 速卖通店铺',
+    },
+    desc: {
+      zh: '针对亚马逊与速卖通两套平台规则，分别组织品牌故事、产品层级、卖点模块与收口路径。页面不是把图片排整齐，而是让用户按经营目标完成浏览。',
+      en: 'Brand story, product hierarchy, selling-point modules and exit paths are organised around the rules of Amazon and AliExpress. The page is not an image stack; it is a guided commercial journey.',
+    },
+    tags: { zh: ['店铺首页', '信息架构', '双平台'], en: ['Storefront', 'Information architecture', 'Two platforms'] },
+    metrics: {
+      zh: [
+        { k: '平台', v: '02' },
+        { k: '页面模块', v: '46' },
+      ],
+      en: [
+        { k: 'Platforms', v: '02' },
+        { k: 'Page assets', v: '46' },
+      ],
+    },
+    children: [
+      {
+        slug: 'amazon',
+        gallery: 'web-amazon',
+        coverFile: '01-主视觉-E75.webp',
+        title: { zh: '亚马逊店铺视觉', en: 'Amazon Storefront' },
+        subtitle: { zh: '品牌背书 · 选择理由 · 热卖转场', en: 'Trust · Reasons to choose · Bestsellers' },
+        desc: {
+          zh: '以 A+ 页面的阅读逻辑组织内容：先建立品牌可信度，再解释为什么选择，最后把用户带到具体产品。模块之间用统一的光效、留白和品牌橙保持连贯。',
+          en: 'Content follows A+ reading logic: establish brand trust, explain the reasons to choose, then move users into specific products. Consistent light, whitespace and brand orange connect the modules.',
+        },
+        tags: { zh: ['Amazon', '品牌故事', 'A+'], en: ['Amazon', 'Brand story', 'A+'] },
+      },
+      {
+        slug: 'aliexpress',
+        gallery: 'web-aliexpress',
+        coverFile: '18-品牌视觉主视觉.webp',
+        title: { zh: '速卖通店铺视觉', en: 'AliExpress Storefront' },
+        subtitle: { zh: '快速分类 · 产品矩阵 · 轮播转化', en: 'Fast categories · Product matrix · Carousels' },
+        desc: {
+          zh: '速卖通用户更依赖快速扫描与即时比较，因此页面先给品类入口和高识别轮播，再用热卖产品和品牌信息完成承接。统一的红色促销语言与产品摄影形成节奏。',
+          en: 'AliExpress users scan and compare quickly, so the page opens with category access and recognisable carousels, then supports them with bestsellers and brand information. Promotional red and product photography create the rhythm.',
+        },
+        tags: { zh: ['AliExpress', '分类导航', '轮播'], en: ['AliExpress', 'Category nav', 'Carousels'] },
+      },
+    ],
+  },
+  {
+    index: '03',
+    slug: 'illustration',
+    coverGroup: 'illustration',
+    covers: [
+      { gallery: 'illustration-card', file: '01-故宫祥瑞-封面.webp' },
+    ],
+    year: '2026',
+    category: { zh: '手绘插画', en: 'Hand-drawn illustration' },
+    title: { zh: '故宫祥瑞 · 八大瑞兽', en: 'Auspicious Beasts of the Forbidden City' },
+    subtitle: {
+      zh: 'Palace-inspired illustration & brand storytelling',
+      en: '故宫祥瑞插画与品牌延展',
+    },
+    desc: {
+      zh: '以故宫屋脊瑞兽为叙事核心，把金龙、凤凰、麒麟等传统意象重新组织成当代视觉系统。保留原有瑞兽角色、题签和印章，重做长页节奏、字体层级与样机叙事。',
+      en: 'Roof beasts of the Forbidden City become the narrative core in a contemporary visual system. The original characters, title labels and seals stay; the long-form pacing, type hierarchy and mockup story are rebuilt.',
+    },
+    tags: { zh: ['故宫祥瑞', '东方插画', '品牌延展'], en: ['Palace auspiciousness', 'Eastern illustration', 'Brand system'] },
+    metrics: {
+      zh: [
+        { k: '瑞兽', v: '08' },
+        { k: '画册页', v: '08' },
+      ],
+      en: [
+        { k: 'Beasts', v: '08' },
+        { k: 'Book pages', v: '08' },
+      ],
+    },
+    conservation: {
+      keep: {
+        title: { zh: '保留', en: 'Keep' },
+        items: {
+          zh: ['八大瑞兽的角色设定与画面叙事', '中文题签、印章与故宫色彩关系', '样机场景作为品牌延展证据'],
+          en: ['The eight characters and their visual story', 'Chinese title labels, seals and palace colour relationships', 'Mockups as evidence of brand extension'],
+        },
+      },
+      improve: {
+        title: { zh: '优化', en: 'Improve' },
+        items: {
+          zh: ['把长页拆成“总览—角色—细节—应用”四段', '重新统一字号、行距与留白节奏', '减少信息平均用力，让每只瑞兽有独立主视觉'],
+          en: ['Split the long page into overview, characters, details and applications', 'Unify type scale, leading and whitespace', 'Stop giving every fact equal weight; give each beast a distinct key visual'],
+        },
+      },
+    },
+    beasts: [
+      { name: '金龙', en: 'Golden Dragon', meaning: { zh: '祥瑞 · 权威', en: 'Auspicious · Authority' } },
+      { name: '凤凰', en: 'Phoenix', meaning: { zh: '瑞德 · 太平', en: 'Virtue · Harmony' } },
+      { name: '金狮', en: 'Golden Lion', meaning: { zh: '守护 · 威仪', en: 'Guardian · Dignity' } },
+      { name: '麒麟', en: 'Qilin', meaning: { zh: '仁兽 · 盛世', en: 'Benevolence · Prosperity' } },
+      { name: '甪瑞', en: 'Luru', meaning: { zh: '明达 · 通达', en: 'Wisdom · Clarity' } },
+      { name: '狻貌', en: 'Suanni', meaning: { zh: '辟邪 · 镇守', en: 'Protection · Warding' } },
+      { name: '懈豸', en: 'Xiezhi', meaning: { zh: '公正 · 辨是非', en: 'Justice · Discernment' } },
+      { name: '行什', en: 'Xingshi', meaning: { zh: '镇火 · 避雷', en: 'Fire protection · Safety' } },
+    ],
+  },
+  {
+    index: '04',
+    slug: 'materials',
+    coverGroup: 'materials',
+    covers: [
+      { gallery: 'materials', file: '05-05.webp' },
+    ],
+    year: '2026',
+    category: { zh: '物料', en: 'Print & Collateral' },
+    title: { zh: '品牌画册与展会折页', en: 'Product Catalogue & Exhibition Foldouts' },
+    subtitle: {
+      zh: '2026 ACEBEAM catalogue system',
+      en: '2026 ACEBEAM 产品画册体系',
+    },
+    desc: {
+      zh: '一本 28 页产品画册与中英双语展会折页。画册负责完整产品矩阵，折页负责在展会现场用最短时间建立品牌印象、给出系列入口并完成询盘承接。',
+      en: 'A 28-page product catalogue plus bilingual exhibition foldouts. The catalogue carries the full range; the foldouts build an impression fast, surface the series and create a clear inquiry path on site.',
+    },
+    tags: { zh: ['28 页画册', '中英折页', '印刷设计'], en: ['28-page catalogue', 'Bilingual foldouts', 'Print design'] },
+    metrics: {
+      zh: [
+        { k: '画册页数', v: '28' },
+        { k: '折页版本', v: '02' },
+      ],
+      en: [
+        { k: 'Catalogue pages', v: '28' },
+        { k: 'Foldout editions', v: '02' },
+      ],
+    },
+  },
+  {
+    index: '05',
+    slug: '3d-rendering',
+    coverGroup: '3d-rendering',
+    covers: [
+      { gallery: '3d-rendering', file: '01-机械场景-主视觉.webp' },
+    ],
+    year: '2024 — 2026',
+    category: { zh: '3D 建模渲染', en: '3D Modeling & Rendering' },
+    title: { zh: '基础建模与渲染练习', en: 'Modeling & Rendering Practice' },
+    subtitle: {
+      zh: 'Blender · Lighting · AI-assisted look development',
+      en: 'Blender · 灯光 · AI 辅助视觉开发',
+    },
+    desc: {
+      zh: '具备基础建模、材质、灯光与渲染能力，能够处理结构清晰的产品和道具；在更复杂的场景中，也能结合 AI 生成与后期合成推进视觉开发。',
+      en: 'Practical modeling, material, lighting and rendering skills for clear product and prop forms. For more complex scenes, AI generation and post-compositing extend the look-development process.',
+    },
+    tags: { zh: ['Blender', '基础建模', 'AI 辅助'], en: ['Blender', 'Basic modeling', 'AI-assisted'] },
+    metrics: {
+      zh: [
+        { k: '主要工具', v: 'Blender' },
+        { k: '精选画面', v: '07' },
+      ],
+      en: [
+        { k: 'Main tool', v: 'Blender' },
+        { k: 'Selected frames', v: '07' },
+      ],
+    },
+  },
+]
+
+/*
+  首页与「其他项目」总览共用这一份顺序：
+  双店铺 → 故宫祥瑞 → 平台店铺 → 品牌画册 → 建模渲染。
+
+  详情页、序号和悬浮菜单都从这里读取，所以只改这一处就不会出现
+  “卡片换了位置，但 02 / 03 还停在旧项目上”的错位。
+*/
+const otherProjectMenuLabels = {
+  'domestic-ecommerce': { zh: '双店铺', en: 'Two stores' },
+  illustration: { zh: '故宫祥瑞', en: 'Palace auspiciousness' },
+  'web-design': { zh: '平台店铺', en: 'Platform storefronts' },
+  materials: { zh: '品牌画册', en: 'Brand catalogue' },
+  '3d-rendering': { zh: '建模渲染', en: '3D modeling' },
+}
+
+const otherProjectOrder = [
+  'domestic-ecommerce',
+  'illustration',
+  'web-design',
+  'materials',
+  '3d-rendering',
+]
+
+const otherProjectsBySlug = new Map(otherProjectsSource.map((project) => [project.slug, project]))
+
+export const otherProjects = otherProjectOrder.map((slug, index) => {
+  const project = otherProjectsBySlug.get(slug)
+  return {
+    ...project,
+    index: String(index + 1).padStart(2, '0'),
+    menuLabel: otherProjectMenuLabels[slug],
+  }
+})
+
+export const otherProjectsPage = {
+  kicker: 'Other Projects',
+  title: { zh: '其他项目', en: 'Other Projects' },
+  titleEn: { zh: 'Beyond Cross-border · 05 Categories', en: '跨境电商之外 · 05 类' },
+  desc: {
+    zh: '国内电商、故宫祥瑞插画、平台网页、品牌印刷物料与 3D 渲染。五个入口分别展开，每个类别都能继续进入独立项目页。',
+    en: 'Domestic e-commerce, palace-inspired illustration, platform storefronts, print collateral and 3D rendering. Five entries, each opening into dedicated project pages.',
+  },
+}
+
+export const otherProjectUi = {
+  backOther: { zh: '返回其他项目', en: 'Back to other projects' },
+  backCategory: { zh: '返回类别', en: 'Back to category' },
+  explore: { zh: '进入项目', en: 'Explore project' },
+  openSeries: { zh: '查看这一组', en: 'View the series' },
+  gallery: { zh: '项目图库', en: 'Project gallery' },
+  overview: { zh: '项目概览', en: 'Overview' },
+  viewAllOther: { zh: '查看其他项目', en: 'View other projects' },
+}
+
 export const projectFilters = {
   zh: ['全部', '手电', '头灯', 'EDC', '配件', '社媒'],
   en: ['All', 'Flashlight', 'Headlamp', 'EDC', 'Battery', 'Social'],
@@ -654,57 +999,57 @@ export const worksPage = {
 
 export const strengths = [
   {
-    id: 'cross-border',
-    title: { zh: '跨境视觉落地', en: 'Cross-border delivery' },
-    en: { zh: 'Cross-border', en: '跨境视觉' },
+    id: 'commerce',
+    title: { zh: '全渠道电商视觉', en: 'Omnichannel e-commerce' },
+    en: { zh: 'E-commerce', en: '全渠道电商' },
     desc: {
-      zh: '熟悉亚马逊与独立站的展示规则与版面逻辑，主图、A+、详情页一次成型，不用来回返工。',
-      en: 'Familiar with Amazon and DTC display rules and layout logic — listings, A+ and detail pages land right the first time.',
+      zh: '熟悉亚马逊、速卖通和独立站的展示逻辑；能用国内双店铺 A/B 测试不同主图策略，再按点击、转化与加购数据持续迭代。',
+      en: 'Fluent across Amazon, AliExpress and DTC storefronts. I also test listing systems through dual domestic stores, then refine them with CTR, conversion and add-to-cart data.',
     },
   },
   {
-    id: 'retouch',
-    title: { zh: '产品精修与渲染', en: 'Retouch & rendering' },
-    en: { zh: 'Retouch', en: '产品精修' },
+    id: 'systems',
+    title: { zh: '页面系统与信息架构', en: 'Page systems & IA' },
+    en: { zh: 'Page systems', en: '页面系统' },
     desc: {
-      zh: '质感调色、材质还原、场景渲染，让产品在图上立得住，也让卖点看得见。',
-      en: 'Tone, material and scene work that make a product stand up in the frame — and its selling points visible.',
+      zh: '把品牌故事、产品层级、卖点模块与收口路径组织成可浏览的页面；A+、店铺首页、详情页和落地页共用一套清晰结构。',
+      en: 'I organise brand story, product hierarchy, selling points and exit paths into browsable pages; A+, storefronts, product pages and landing pages share one clear structure.',
     },
   },
   {
-    id: 'layout',
-    title: { zh: '版式与信息层级', en: 'Layout & hierarchy' },
-    en: { zh: 'Layout', en: '版式层级' },
+    id: 'product',
+    title: { zh: '产品精修与 3D 渲染', en: 'Product retouch & 3D' },
+    en: { zh: 'Product visual', en: '产品视觉' },
     desc: {
-      zh: '把复杂参数拆成清晰的阅读顺序，让用户在 3 秒内抓住核心卖点。',
-      en: 'Complex specs broken into a clear reading order, so the core point lands within three seconds.',
+      zh: '从光效、材质和场景合成，到 Blender 基础建模与渲染，让产品在不同媒介保持一致质感；复杂画面可结合 AI 与后期继续推进。',
+      en: 'From light, material and scene compositing to foundational Blender modelling and rendering, I keep product quality consistent across media, extending complex scenes with AI and post.',
+    },
+  },
+  {
+    id: 'story',
+    title: { zh: '插画叙事与品牌延展', en: 'Illustration & brand storytelling' },
+    en: { zh: 'Storytelling', en: '插画叙事' },
+    desc: {
+      zh: '故宫祥瑞项目把传统瑞兽重组为当代品牌语言；能处理角色视觉、题签印章、长页节奏与样机应用。',
+      en: 'The Forbidden City project recasts traditional roof beasts as a contemporary brand language — character direction, title labels, seals, long-form pacing and mockup applications.',
     },
   },
   {
     id: 'multi',
-    title: { zh: '多载体交付', en: 'Multi-format delivery' },
-    en: { zh: 'Multi-format', en: '多载体' },
+    title: { zh: '多载体品牌落地', en: 'Multi-format delivery' },
+    en: { zh: 'Multi-format', en: '多载体落地' },
     desc: {
-      zh: '从线上社媒海报到线下候车亭、地铁广告，多尺寸、多材质一次交付不出错。',
-      en: 'From social posts to bus shelters and metro ads — many sizes and materials delivered without errors.',
+      zh: '海外社媒、活动视觉、28 页产品画册、中英双语展会折页与线下广告统一交付，保证不同尺寸和材质下识别一致。',
+      en: 'Overseas social, campaign visuals, a 28-page catalogue, bilingual exhibition foldouts and offline advertising — one recognisable system across sizes and substrates.',
     },
   },
   {
-    id: 'vi',
-    title: { zh: '品牌 VI 规范', en: 'Brand VI system' },
-    en: { zh: 'Brand system', en: '品牌规范' },
+    id: 'strategy',
+    title: { zh: '策略到交付闭环', en: 'Strategy-to-delivery' },
+    en: { zh: 'End-to-end', en: '完整闭环' },
     desc: {
-      zh: '服务中国移动等品牌代理项目，严格遵循 VI 规范，保证规模化交付的一致性。',
-      en: 'On brand-agency accounts such as China Mobile, following VI guidelines strictly to keep large volumes consistent.',
-    },
-  },
-  {
-    id: 'collab',
-    title: { zh: '与运营同频', en: 'Working with operations' },
-    en: { zh: 'Collaboration', en: '配合运营' },
-    desc: {
-      zh: '理解大促节奏与投放需求，快速响应日常更新与活动迭代，视觉跟着业务走。',
-      en: 'I understand promo cycles and ad requirements, respond fast to daily updates, and let the visuals follow the business.',
+      zh: '能从项目目标、平台规则和大促节奏出发，独立推进策划、版式、精修、渲染与交付，再用经营数据复盘调整。',
+      en: 'I start from business goals, platform rules and promo calendars, then carry concept, layout, retouch, rendering and delivery through, refining with operating data.',
     },
   },
 ]
@@ -723,6 +1068,15 @@ export const keywords = {
     '海外社媒海报',
     '新品发布物料',
     '促销活动视觉',
+    '国内电商主图',
+    '亚马逊店铺',
+    '速卖通店铺',
+    'A/B 主图测试',
+    '故宫祥瑞插画',
+    '品牌画册',
+    '双语展会折页',
+    '3D 建模渲染',
+    '品牌视觉延展',
     '参数可视化',
     '中英双语排版',
     '包装与说明书',
@@ -739,6 +1093,15 @@ export const keywords = {
     'Overseas social posters',
     'Launch creatives',
     'Promo visuals',
+    'Domestic listing visuals',
+    'Amazon storefronts',
+    'AliExpress storefronts',
+    'Listing A/B testing',
+    'Palace-inspired illustration',
+    'Brand catalogues',
+    'Bilingual exhibition foldouts',
+    '3D modelling & rendering',
+    'Brand extensions',
     'Data visualisation',
     'Bilingual layout',
     'Packaging & manuals',
@@ -756,7 +1119,7 @@ export const nav = [
 ]
 
 /** 页面里章节的先后顺序，用于滚动时高亮当前导航项 */
-export const sectionOrder = ['hero', 'about', 'works', 'strengths', 'contact']
+export const sectionOrder = ['hero', 'about', 'works', 'other', 'strengths', 'contact']
 
 /** 各章节标题：大字用当前语言，眉标（小字）用另一种语言 */
 export const sections = {
@@ -764,8 +1127,8 @@ export const sections = {
     eyebrow: { zh: 'About / Profile', en: '关于我' },
     title: { zh: '关于我', en: 'About Me' },
     desc: {
-      zh: '从线下品牌物料做到跨境电商全链路视觉，把「好看」落到能被点击、能被转化的版面上。',
-      en: 'From offline brand collateral to full-stack cross-border visuals — making work that gets clicked and trusted.',
+      zh: '从线下品牌物料，到跨境与国内电商、平台店铺、插画和多载体品牌项目，把「好看」落到能浏览、能转化的版面上。',
+      en: 'From offline brand collateral to cross-border and domestic e-commerce, storefronts, illustration and multi-format brand projects — making work that gets browsed, clicked and trusted.',
     },
   },
   works: {
@@ -776,12 +1139,20 @@ export const sections = {
       en: 'Six ACEBEAM product detail pages plus one overseas social kit — each with design notes.',
     },
   },
+  other: {
+    eyebrow: { zh: 'Other Projects', en: '其他项目' },
+    title: { zh: '其他项目', en: 'Other Projects' },
+    desc: {
+      zh: '国内电商双风格测试、亚马逊与速卖通店铺、故宫祥瑞插画、品牌画册折页与 3D 渲染。',
+      en: 'A dual-style domestic e-commerce test, Amazon and AliExpress storefronts, palace-inspired illustration, print collateral and 3D rendering.',
+    },
+  },
   strengths: {
     eyebrow: { zh: 'Capabilities', en: '个人优势' },
     title: { zh: '个人优势', en: 'Capabilities' },
     desc: {
-      zh: '能独立扛下跨境与国内电商的视觉全流程，也能和运营一起把节奏跑起来。',
-      en: 'Able to run the full visual process for cross-border and domestic e-commerce, and to keep pace with the operations team.',
+      zh: '跨境电商详情页与店装、国内双店铺 A/B、故宫祥瑞插画、28 页品牌画册与 3D 渲染——能独立完成从策略、视觉到交付的完整闭环。',
+      en: 'Marketplace pages and storefronts, dual-store domestic e-commerce tests, palace-inspired illustration, a 28-page catalogue and 3D rendering — a complete path from strategy and visuals to final delivery.',
     },
   },
 }
@@ -793,8 +1164,8 @@ export const contactSection = {
     en: ['Got a project to ship?', 'Let’s start with the visuals.'],
   },
   desc: {
-    zh: '亚马逊主图 / 独立站详情页 / 大促活动页 / 产品精修与场景渲染 / 品牌物料，都可以直接找我。',
-    en: 'Listing images, DTC detail pages, campaign pages, retouching and scene rendering, brand collateral — all of it, straight to me.',
+    zh: '跨境与国内电商主图 / 平台店铺 / 详情页 / 大促活动 / 插画与品牌物料 / 产品精修与 3D 渲染，都可以直接找我。',
+    en: 'Cross-border and domestic listing visuals, storefronts, product pages, campaigns, illustration and brand collateral, retouching and 3D rendering — all of it, straight to me.',
   },
   cta: { zh: '发邮件', en: 'Send email' },
   rows: [
@@ -826,6 +1197,8 @@ export const ui = {
   factRole: { zh: '我的角色', en: 'My role' },
   factDeliver: { zh: '交付内容', en: 'Deliverables' },
   notFound: { zh: '没有找到这个作品', en: 'Project not found' },
+  notFoundOther: { zh: '没有找到这个项目', en: 'Project not found' },
+  backToOther: { zh: '返回其他项目', en: 'Back to other projects' },
   experienceNote: { zh: 'Experience · 2023 — NOW', en: '工作经历 · 2023 至今' },
   contactNote: { zh: 'Contact · 点右侧复制', en: '联系方式 · 点右侧复制' },
   awardsNote: { zh: 'Awards · 全国大学生广告艺术大赛', en: '获奖 · 全国大学生广告艺术大赛' },

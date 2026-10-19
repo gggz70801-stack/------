@@ -219,6 +219,401 @@
   transform: translateY(-3px) rotate(-45deg);
 }
 
+/* ---------- Portfolio route controls ---------- */
+.route-back,
+.route-switch {
+  position: fixed;
+  z-index: 62;
+  background: rgba(8, 6, 5, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 48px -30px rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(16px) saturate(1.15);
+}
+
+.route-back {
+  /*
+    旧公式额外加了一次 --pad，按钮会缩在正文里面；
+    这里再往左让出约 40px，和页面内返回键保持同一条视觉轴线。
+  */
+  left: max(
+    14px,
+    calc(var(--pad) - 40px),
+    calc((100vw - var(--shell)) / 2 - 40px)
+  );
+  bottom: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--fs-small);
+  animation: route-control-in 0.42s var(--ease) both;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.nav.is-scrolled .route-back {
+  top: 82px;
+}
+
+.nav:not(.is-scrolled) .route-back {
+  top: 98px;
+}
+
+.route-back > span {
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.route-back:hover {
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-rgb), 0.44);
+  color: #fff;
+}
+
+.route-switch {
+  right: max(var(--pad), calc((100vw - var(--shell)) / 2 + var(--pad)));
+  bottom: auto;
+  display: flex;
+  align-items: stretch;
+  padding: 5px;
+  border-radius: 18px;
+  animation: route-control-in 0.48s 0.08s var(--ease) both;
+}
+
+.nav.is-scrolled .route-switch {
+  top: 82px;
+}
+
+.nav:not(.is-scrolled) .route-switch {
+  top: 98px;
+}
+
+.route-switch > a,
+.route-projects__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: var(--fs-small);
+  letter-spacing: 0.02em;
+  transition: color 0.3s var(--ease), background-color 0.3s var(--ease);
+}
+
+.route-switch > a:hover,
+.route-projects__trigger:hover {
+  color: #fff;
+}
+
+.route-switch > a.is-active,
+.route-projects__trigger.is-active {
+  background:
+    linear-gradient(135deg, rgba(var(--accent-rgb), 0.22), rgba(var(--accent-rgb), 0.08)),
+    rgba(255, 255, 255, 0.04);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.3);
+}
+
+.route-projects.is-open > .route-projects__trigger:not(.is-active) {
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.22);
+}
+
+.route-switch .mono {
+  color: var(--accent);
+}
+
+/* ---------- 作品大类：两个同级悬浮入口 ---------- */
+.route-projects {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  --project-child-width: 328px;
+}
+
+.route-projects__chevron {
+  width: 14px;
+  height: 14px;
+  margin-left: 3px;
+  color: var(--text-mute);
+  transition: transform 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+.route-projects.is-open .route-projects__chevron {
+  color: var(--accent);
+  transform: rotate(180deg);
+}
+
+.route-projects__menu {
+  position: absolute;
+  z-index: 3;
+  top: calc(100% + 12px);
+  right: 0;
+  width: min(560px, calc(100vw - 28px));
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background:
+    radial-gradient(90% 90% at 100% 0%, rgba(var(--accent-rgb), 0.08), transparent 56%),
+    rgba(8, 6, 5, 0.97);
+  box-shadow: 0 30px 80px -38px rgba(0, 0, 0, 0.98);
+  backdrop-filter: blur(20px) saturate(1.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.985);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.26s var(--ease), visibility 0.26s var(--ease),
+    transform 0.36s var(--ease);
+}
+
+.route-projects__menu::before {
+  content: '';
+  position: absolute;
+  inset: -12px 0 auto;
+  height: 12px;
+}
+
+.route-projects.is-open .route-projects__menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.route-projects__menu::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 24px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(8, 6, 5, 0.97);
+  transform: rotate(45deg);
+}
+
+.route-projects__menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 7px 10px 13px;
+  color: var(--text-mute);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.12em;
+}
+
+.route-projects__menu-head > :first-child {
+  color: var(--accent);
+}
+
+.route-projects__list {
+  border-top: 1px solid var(--line);
+}
+
+.route-projects--works .route-projects__list {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.45) transparent;
+}
+
+.route-project {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+}
+
+.route-project__link {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto 18px;
+  align-items: center;
+  gap: 12px;
+  min-height: 54px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  transition: color 0.28s var(--ease), background-color 0.28s var(--ease);
+}
+
+.route-project__link:hover,
+.route-project__link:focus-visible {
+  background: rgba(255, 255, 255, 0.055);
+  color: #fff;
+  outline: 0;
+}
+
+.route-project__index {
+  color: var(--accent);
+  font-size: var(--fs-micro);
+}
+
+.route-project__name {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.route-project__type {
+  color: var(--text-mute);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.04em;
+}
+
+.route-project__arrow {
+  color: var(--text-mute);
+  font-family: var(--font-mono);
+  font-size: var(--fs-item);
+  text-align: right;
+  transition: color 0.28s var(--ease), transform 0.28s var(--ease);
+}
+
+.route-project:hover .route-project__arrow {
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+/*
+  一级菜单与触发它的标签右对齐；
+  二级菜单从左侧展开，避免在大屏下继续向右出屏。
+*/
+.route-project__children {
+  position: absolute;
+  z-index: 4;
+  top: -1px;
+  left: auto;
+  right: calc(100% + 10px);
+  width: 328px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background:
+    radial-gradient(100% 100% at 100% 0%, rgba(var(--accent-rgb), 0.09), transparent 58%),
+    rgba(10, 7, 5, 0.99);
+  box-shadow: 0 28px 70px -34px rgba(0, 0, 0, 0.98);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(8px);
+  pointer-events: none;
+  transition: opacity 0.24s var(--ease), visibility 0.24s var(--ease),
+    transform 0.32s var(--ease);
+}
+
+.route-project.has-children:hover > .route-project__children,
+.route-project.has-children:focus-within > .route-project__children,
+.route-project.has-children.is-open > .route-project__children {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.route-project__children-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 2px 4px 10px;
+  color: var(--text-mute);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.1em;
+}
+
+.route-project__children-head > :first-child {
+  color: var(--text-dim);
+}
+
+.route-project__child {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px;
+  border-top: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--text);
+  transition: background-color 0.26s var(--ease), color 0.26s var(--ease);
+}
+
+.route-project__child:hover,
+.route-project__child:focus-visible {
+  background: rgba(255, 255, 255, 0.055);
+  color: #fff;
+  outline: 0;
+}
+
+.route-project__child > .mono,
+.route-project__child > :last-child {
+  color: var(--accent);
+  font-size: var(--fs-micro);
+}
+
+.route-project__child strong,
+.route-project__child em {
+  display: block;
+}
+
+.route-project__child strong {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.route-project__child em {
+  margin-top: 3px;
+  color: var(--text-mute);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.route-projects__all {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 10px;
+  color: var(--text-dim);
+  font-size: var(--fs-small);
+  transition: color 0.28s var(--ease), background-color 0.28s var(--ease);
+}
+
+.route-projects__all:hover,
+.route-projects__all:focus-visible {
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--accent);
+  outline: 0;
+}
+
+@keyframes route-control-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 1081px) {
+  .route-projects--works .route-project__link {
+    min-height: 45px;
+    padding-block: 5px;
+  }
+
+  .route-projects--works .route-projects__list {
+    max-height: calc(100vh - 286px);
+  }
+}
+
 @media (max-width: 1080px) {
   .nav__brand-text em {
     display: none;
@@ -247,10 +642,85 @@
   .nav__burger {
     display: grid;
   }
+
+  .route-switch {
+    right: 14px;
+    left: 14px;
+    top: auto !important;
+    bottom: 14px;
+    justify-content: stretch;
+  }
+
+  .route-switch > a,
+  .route-projects,
+  .route-projects__trigger {
+    flex: 1;
+    justify-content: center;
+    min-height: 52px;
+    font-size: var(--fs-body);
+  }
+
+  .route-projects__menu {
+    top: auto;
+    right: 0;
+    bottom: calc(100% + 10px);
+    width: min(560px, calc(100vw - 28px));
+    max-height: min(70vh, 620px);
+    overflow-y: auto;
+    transform-origin: bottom right;
+  }
+
+  .route-projects__menu::before {
+    inset: 100% 0 auto;
+    height: 10px;
+  }
+
+  .route-projects__menu::after {
+    display: none;
+  }
+
+  .route-project__children {
+    position: static;
+    width: auto;
+    margin: 7px 8px 10px 46px;
+    padding: 10px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+    display: none;
+  }
+
+  .route-project.has-children:hover > .route-project__children,
+  .route-project.has-children:focus-within > .route-project__children,
+  .route-project.has-children.is-open > .route-project__children {
+    display: block;
+  }
+
+  .route-back {
+    left: 14px;
+    top: 76px;
+  }
 }
 
 @media (max-width: 520px) {
   .nav__cta {
+    display: none;
+  }
+
+  .route-switch > a,
+  .route-projects,
+  .route-projects__trigger {
+    gap: 7px;
+    padding-inline: 9px;
+    font-size: var(--fs-small);
+  }
+
+  .route-project__link {
+    grid-template-columns: 28px minmax(0, 1fr) 18px;
+  }
+
+  .route-project__type {
     display: none;
   }
 }

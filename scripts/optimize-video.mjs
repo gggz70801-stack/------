@@ -15,27 +15,31 @@
  */
 
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync, createReadStream } from 'node:fs'
-import { join, extname, basename } from 'node:path'
+import { join, extname, basename, dirname } from 'node:path'
 import { createRequire } from 'node:module'
 import { createServer } from 'node:http'
 import { spawnSync } from 'node:child_process'
 
 const ROOT = process.cwd()
 const SRC_DIR = join(ROOT, 'media-src', 'video')
-const OUT_DIR = join(ROOT, 'public', 'media')
-const OUT_VIDEO = join(OUT_DIR, 'hero-loop.mp4')
-const OUT_POSTER = join(OUT_DIR, 'hero-poster.jpg')
 
 const args = process.argv.slice(2)
 const argValue = (flag, fallback) => {
   const i = args.indexOf(flag)
   return i >= 0 && args[i + 1] ? args[i + 1] : fallback
 }
+const resolvePath = (value) =>
+  /^[A-Za-z]:[\\/]/.test(value) || value.startsWith('/') || value.startsWith('\\\\')
+    ? value
+    : join(ROOT, value)
+const OUT_DIR = join(ROOT, 'public', 'media')
+const OUT_VIDEO = resolvePath(argValue('--out-video', 'public/media/hero-loop.mp4'))
+const OUT_POSTER = resolvePath(argValue('--out-poster', 'public/media/hero-poster.jpg'))
 const START = Number(argValue('--start', 2))
 const DURATION = Number(argValue('--duration', 10))
 const WIDTH = Number(argValue('--width', 1920))
 const HEIGHT = Math.round((WIDTH * 9) / 16)
-const BITRATE = Number(argValue('--bitrate', 9)) * 1_000_000
+const BITRATE = Number(argValue('--bitrate', 4)) * 1_000_000
 const TARGET_MB = Number(argValue('--target', 12))
 
 const MB = 1024 * 1024
@@ -88,6 +92,8 @@ if (!source || !existsSync(source)) {
 
 const sourceMB = (statSync(source).size / MB).toFixed(1)
 mkdirSync(OUT_DIR, { recursive: true })
+mkdirSync(dirname(OUT_VIDEO), { recursive: true })
+mkdirSync(dirname(OUT_POSTER), { recursive: true })
 
 /* ---------- 方案 A：ffmpeg ---------- */
 if (hasFfmpeg()) {

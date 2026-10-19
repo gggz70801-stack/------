@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import AnimatedContent from './AnimatedContent'
+import ProjectBackdrop from './ProjectBackdrop'
 import WorkVisual from './WorkVisual'
 import { getCover } from '../lib/gallery'
 import { navigate, rememberWorksOrigin, goHomeTo } from '../lib/useHashRoute'
 import useContent from '../lib/content'
 import './works-index.css'
+import './other-index.css'
 
 /** 作品列表页：#/works —— 全部作品，网格浏览 */
 export default function WorksIndex() {
@@ -25,10 +27,10 @@ export default function WorksIndex() {
   const categories = new Set(c.projects.map((p) => t(p.category)))
   const years = c.projects.flatMap((p) => String(p.year).match(/\d{4}/g) || []).map(Number)
   const yearRange = years.length ? `${Math.min(...years)} — ${Math.max(...years)}` : '—'
-
   return (
     <div className="windex">
       <header className="windex__head">
+        <ProjectBackdrop className="windex__backdrop" variant="field-op" tone="amber" />
         <div className="shell">
           <AnimatedContent distance={44} blur={8} duration={1}>
             <span className="kicker">{page.kicker}</span>
@@ -53,6 +55,7 @@ export default function WorksIndex() {
               <strong>{yearRange}</strong>
             </div>
           </AnimatedContent>
+
         </div>
       </header>
 

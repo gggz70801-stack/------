@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
+import subscribeViewport from './scrollFrame'
 
 /** 根据滚动位置高亮当前导航项 */
 export default function useActiveSection(ids) {
   const [active, setActive] = useState(null)
 
   useEffect(() => {
-    const onScroll = () => {
+    return subscribeViewport(() => {
       const probe = window.innerHeight * 0.34
       let current = null
       ids.forEach((id) => {
@@ -14,15 +15,8 @@ export default function useActiveSection(ids) {
         const rect = el.getBoundingClientRect()
         if (rect.top <= probe) current = id
       })
-      setActive(current)
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-    }
+      setActive((previous) => (previous === current ? previous : current))
+    })
   }, [ids])
 
   return active

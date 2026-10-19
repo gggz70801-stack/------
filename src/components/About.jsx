@@ -1,5 +1,5 @@
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import AnimatedContent from './AnimatedContent'
-import HoloCard from './HoloCard'
 import SectionPlate from './SectionPlate'
 import { getMisc } from '../lib/gallery'
 import { copyText } from '../lib/toast'
@@ -8,8 +8,40 @@ import { sections } from '../data/profile'
 import aboutBg from '../assets/section-bg/about-ghost.webp'
 import './about.css'
 
+const HoloCard = lazy(() => import('./HoloCard'))
+
 /** 大广赛获奖证书（图片放在 media-src/awards/，压缩后自动读取） */
 const certificates = getMisc('awards')
+
+function DeferredHoloCard(props) {
+  const ref = useRef(null)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node) return undefined
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setReady(true)
+        observer.disconnect()
+      },
+      { rootMargin: '160px 0px' }
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div className="deferred-holo" ref={ref}>
+      {ready ? (
+        <Suspense fallback={null}>
+          <HoloCard {...props} />
+        </Suspense>
+      ) : null}
+    </div>
+  )
+}
 
 function CopyButton({ value, label, title }) {
   return (
@@ -88,7 +120,7 @@ export default function About() {
             duration={1}
             threshold={0.12}
           >
-            <HoloCard
+            <DeferredHoloCard
               className="portrait-card"
               image={c.profile.portrait}
               alt={t(c.profile.name)}

@@ -18,27 +18,69 @@ import './hero.css'
 export default function Hero() {
   const videoRef = useRef(null)
   const [failed, setFailed] = useState(false)
+  const [onScreen, setOnScreen] = useState(true)
 
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const connection = navigator.connection
+    const canPlay =
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      !window.matchMedia('(max-width: 760px)').matches &&
+      !connection?.saveData &&
+      !['slow-2g', '2g'].includes(connection?.effectiveType)
 
-    const play = () => video.play().catch(() => {})
-    let id
-    if (typeof window.requestIdleCallback === 'function') {
-      id = window.requestIdleCallback(play, { timeout: 2000 })
-    } else {
-      id = window.setTimeout(play, 1200)
+    let visible = false
+    let started = false
+    let alive = true
+
+    const sync = () => {
+      if (!alive) return
+      if (started && visible && !document.hidden) video.play().catch(() => {})
+      else video.pause()
+    }
+    const enable = () => {
+      started = true
+      sync()
+    }
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting
+        setOnScreen(entry.isIntersecting)
+        sync()
+      },
+      { threshold: 0.01 }
+    )
+    visibility.observe(video)
+    document.addEventListener('visibilitychange', sync)
+
+    let timer = 0
+    let idleId = 0
+    if (canPlay) {
+      // 先让海报、字体和首屏文案完成绘制，再把 5MB 左右的视频送进网络队列。
+      timer = window.setTimeout(() => {
+        if (!alive) return
+        if (typeof window.requestIdleCallback === 'function') {
+          idleId = window.requestIdleCallback(enable, { timeout: 1800 })
+        } else {
+          enable()
+        }
+      }, 1200)
     }
     return () => {
-      if (typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(id)
-      else window.clearTimeout(id)
+      alive = false
+      video.pause()
+      visibility.disconnect()
+      document.removeEventListener('visibilitychange', sync)
+      window.clearTimeout(timer)
+      if (idleId && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(idleId)
+      }
     }
   }, [])
 
   return (
-    <section className="hero" id="hero">
+    <section className={`hero${onScreen ? ' is-on-screen' : ''}`} id="hero">
       <div className="hero__media">
         <HeroPoster />
 
@@ -54,6 +96,9 @@ export default function Hero() {
             loop
             playsInline
             preload="none"
+            disablePictureInPicture
+            tabIndex={-1}
+            aria-hidden="true"
             onError={() => setFailed(true)}
           />
         )}
@@ -75,7 +120,7 @@ export default function Hero() {
           <TechText
             text={hero.poster.title}
             fontWeight={700}
-            fontSize={300}
+            fontSize={320}
             letterSpacing={0}
             align="center"
             reveal="letter"

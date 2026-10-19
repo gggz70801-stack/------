@@ -26,6 +26,7 @@ const BUDGET = {
   image: Number(process.env.BUDGET_IMAGE_MB || 1),
   code: Number(process.env.BUDGET_CODE_MB || 1),
   other: Number(process.env.BUDGET_OTHER_MB || 8),
+  dist: Number(process.env.BUDGET_DIST_MB || 30),
 }
 
 function kindOf(path) {
@@ -56,10 +57,13 @@ function walk(dir, out = []) {
 const mb = (bytes) => `${(bytes / MB).toFixed(2)} MB`
 const rel = (p) => relative(ROOT, p).replace(/\\/g, '/')
 
-const files = DIRS.flatMap((dir) => walk(join(ROOT, dir)))
+const filesByDir = Object.fromEntries(DIRS.map((dir) => [dir, walk(join(ROOT, dir))]))
+const files = DIRS.flatMap((dir) => filesByDir[dir])
 const total = files.reduce((sum, f) => sum + f.size, 0)
+const dirTotal = (dir) => filesByDir[dir].reduce((sum, f) => sum + f.size, 0)
 const sorted = [...files].sort((a, b) => b.size - a.size)
 const over = sorted.filter((f) => f.size > budgetFor(f.path) * MB)
+const distOver = dirTotal('dist') > BUDGET.dist * MB
 
 console.log(
   '\n素材体积体检 · ' +
@@ -80,20 +84,30 @@ if (!files.length) {
 
 console.log('─'.repeat(58))
 console.log(`${'合计'.padStart(10)}  public + dist = ${mb(total)}`)
+console.log(`${'dist'.padStart(10)}  ${mb(dirTotal('dist'))}`)
+console.log(`${'public'.padStart(10)}  ${mb(dirTotal('public'))}`)
 console.log(
   `\n预算：视频 ≤ ${BUDGET.video}MB · 图片 ≤ ${BUDGET.image}MB · 代码 ≤ ${BUDGET.code}MB · 其他 ≤ ${BUDGET.other}MB` +
-    `\n参考：首屏资源（HTML+CSS+JS+首屏媒体）≤ 2–3MB · 整站 dist ≤ 20–30MB`
+    `\n整站：dist ≤ ${BUDGET.dist}MB · 首屏资源（HTML+CSS+JS+首屏媒体）参考 ≤ 2–3MB`
 )
 
-if (over.length) {
-  console.log(`\n⚠️  有 ${over.length} 个文件超过单文件预算：`)
+if (over.length || distOver) {
+  if (distOver) {
+    console.log(
+      `\n⚠️  整站 dist 为 ${mb(dirTotal('dist'))}，超过 ${BUDGET.dist}MB 参考预算 ${mb(dirTotal('dist') - BUDGET.dist * MB)}。` +
+        '\n   展陈型作品集通常有大量按需加载的图片；若必须压到 30MB，优先考虑 CDN / 对象存储，而不是继续牺牲画质。'
+    )
+  }
+  if (over.length) console.log(`\n⚠️  有 ${over.length} 个文件超过单文件预算：`)
   over.forEach((f) => console.log(`   · ${rel(f.path)}  ${mb(f.size)}`))
-  console.log(
-    `\n   处理方式：① 压到预算内（视频 8–15s / ≤${BUDGET.video}MB，图片转 WebP ≤500KB）；` +
-      '\n             ② 或者把大文件放到 CDN / 对象存储，项目里只保留 URL；' +
-      '\n             ③ 需要临时放宽：BUDGET_VIDEO_MB=20 pnpm size'
-  )
+  if (over.length) {
+    console.log(
+      `\n   处理方式：① 压到预算内（视频 8–15s / ≤${BUDGET.video}MB，图片转 WebP ≤500KB）；` +
+        '\n             ② 或者把大文件放到 CDN / 对象存储，项目里只保留 URL；' +
+        '\n             ③ 需要临时放宽：BUDGET_VIDEO_MB=20 pnpm size'
+    )
+  }
   if (!warnOnly) process.exit(1)
 } else {
-  console.log('\n✅ 全部素材都在预算内。')
+  console.log('\n✅ 全部素材与整站体积都在预算内。')
 }

@@ -60,6 +60,20 @@
   width: 100%;
 }
 
+.deferred-holo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 70% 18%, rgba(var(--accent-rgb), 0.08), transparent 48%),
+    #14100c;
+}
+
+.deferred-holo > .holo-card {
+  width: 100%;
+}
+
 .portrait-card {
   /* 宽度跟着栅格列走；比例锁 3:4，图片加载完不会再跳一下 */
   --hc-w: 100%;

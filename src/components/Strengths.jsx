@@ -1,25 +1,34 @@
 import AnimatedContent from './AnimatedContent'
+import SectionPlate from './SectionPlate'
 import useContent from '../lib/content'
 import { sections } from '../data/profile'
+import strengthsBg from '../assets/section-bg/tactical/cod-visor.webp'
 import './strengths.css'
 
 const ICONS = {
-  'cross-border': (
+  commerce: (
     <>
       <circle cx="12" cy="12" r="8.4" />
       <path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.1 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.1-3.6-8.4S9.6 5.9 12 3.6Z" />
     </>
   ),
-  retouch: (
+  systems: (
+    <>
+      <rect x="3.8" y="3.8" width="16.4" height="16.4" rx="2.4" />
+      <path d="M3.8 9.4h16.4M9.6 9.4v10.8" />
+    </>
+  ),
+  product: (
     <>
       <path d="M12 3.4 13.9 9l5.6 2-5.6 2-1.9 5.6L10.1 13 4.5 11l5.6-2z" />
       <path d="M18.4 16.6l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" />
     </>
   ),
-  layout: (
+  story: (
     <>
-      <rect x="3.8" y="3.8" width="16.4" height="16.4" rx="2.4" />
-      <path d="M3.8 9.4h16.4M9.6 9.4v10.8" />
+      <path d="M4.4 5.2h6.1c.8 0 1.5.7 1.5 1.5v11.1H7c-1.4 0-2.6-1.2-2.6-2.6z" />
+      <path d="M19.6 5.2h-6.1c-.8 0-1.5.7-1.5 1.5v11.1H17c1.4 0 2.6-1.2 2.6-2.6z" />
+      <path d="M7.2 9h2.4M14.4 9h2.4" />
     </>
   ),
   multi: (
@@ -34,7 +43,7 @@ const ICONS = {
       <path d="M9 12.2l2.2 2.2 4.2-4.4" />
     </>
   ),
-  collab: (
+  strategy: (
     <>
       <path d="M4.6 10.4A7.6 7.6 0 0 1 17.9 6.6l1.5 2" />
       <path d="M19.4 13.6A7.6 7.6 0 0 1 6.1 17.4l-1.5-2" />
@@ -48,10 +57,11 @@ export default function Strengths() {
 
   return (
     <section className="section strengths" id="strengths">
+      <SectionPlate className="strengths__bg" src={strengthsBg} width={1920} height={1080} />
       <div className="shell">
         <AnimatedContent className="sec-head" distance={40} blur={7} duration={0.95} threshold={0.15}>
           <div className="sec-head__left">
-            <span className="sec-head__index">03</span>
+            <span className="sec-head__index">04</span>
             <h2 className="sec-head__title">
               <span className="sec-head__title-en">{t(sections.strengths.eyebrow)}</span>
               {t(sections.strengths.title)}

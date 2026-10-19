@@ -12,7 +12,12 @@
     "media:image": "node scripts/optimize-images.mjs",
     "media:video": "node scripts/optimize-video.mjs",
     "media:frames": "node scripts/grab-frames.mjs",
-    "plates": "node scripts/make-section-plates.mjs"
+    "plates": "node scripts/make-section-plates.mjs",
+    "media:backdrops": "node scripts/make-tactical-backdrops.mjs",
+    "media:other": "node scripts/render-other-refs.mjs && node scripts/import-other-projects.mjs && node scripts/import-3d-rendering.mjs && node scripts/import-illustration-pdf.mjs",
+    "media:3d": "node scripts/import-3d-rendering.mjs",
+    "media:illustration": "node scripts/import-illustration-pdf.mjs",
+    "media:social": "node scripts/sync-social-assets.mjs && node scripts/optimize-images.mjs --only acebeam-social"
   },
   "dependencies": {
     "react": "^19.1.0",

@@ -1,3 +1,36 @@
+.strengths {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/*
+  「个人优势」背景承接首页其他章节：只在上半页右侧露出夜视装备，
+  到六张能力卡区域提前收干净，保证长段文字和卡片边界始终清楚。
+*/
+.strengths > .strengths__bg {
+  bottom: auto;
+  height: min(64vw, 860px);
+  --plate-opacity: 0.25;
+  --plate-blur: 3.8px;
+  --plate-brightness: 0.88;
+  --plate-contrast: 1.08;
+  --plate-saturate: 0.78;
+  --plate-focus: 46% 34%;
+  --plate-scan-opacity: 0.12;
+  --plate-mask: radial-gradient(
+    72% 74% at 78% 20%,
+    rgba(0, 0, 0, 0.94) 0%,
+    rgba(0, 0, 0, 0.52) 34%,
+    rgba(0, 0, 0, 0.16) 64%,
+    transparent 86%
+  );
+}
+
+.strengths > .shell {
+  position: relative;
+  z-index: 1;
+}
+
 .strengths__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

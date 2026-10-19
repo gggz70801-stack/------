@@ -41,14 +41,16 @@ async function loadPlaywright() {
 }
 
 const args = process.argv.slice(2)
-const hash = args.find((a) => !/^\d+x\d+$/.test(a) && a !== 'full') || ''
+const hash =
+  args.find((a) => !/^\d+x\d+$/.test(a) && a !== 'full' && !a.startsWith('--lang=')) || ''
 const sizeArg = args.find((a) => /^\d+x\d+$/.test(a)) || '1920x1080'
 const fullPage = args.includes('full')
+const langArg = args.find((a) => a.startsWith('--lang='))?.split('=')[1]
 const [width, height] = sizeArg.split('x').map(Number)
 
 const atSection = hash.startsWith('!') ? hash.slice(1) : ''
 const url = atSection ? BASE : BASE + '#/' + hash.replace(/^#*\/?/, '')
-const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 23)
 const outDir = resolve(process.cwd(), '.shots')
 mkdirSync(outDir, { recursive: true })
 const outFile = join(outDir, `${stamp}-${width}x${height}${fullPage ? '-full' : ''}.png`)
@@ -79,7 +81,7 @@ const page = await browser.newPage({ viewport: { width, height }, deviceScaleFac
   语言：站点把中英选择存在 localStorage（见 src/lib/lang.js），
   所以要在页面脚本跑起来之前先把值塞进去，否则会先渲染中文再跳一次。
 */
-const shotLang = process.env.SHOT_LANG
+const shotLang = langArg || process.env.SHOT_LANG
 if (shotLang === 'en' || shotLang === 'zh') {
   await page.addInitScript((value) => window.localStorage.setItem('ybj-lang', value), shotLang)
 }
@@ -89,7 +91,15 @@ page.on('console', (msg) => {
   if (msg.type() === 'error' || msg.type() === 'warning') problems.push(`[${msg.type()}] ${msg.text()}`)
 })
 page.on('pageerror', (err) => problems.push(`[pageerror] ${err.message}`))
-page.on('requestfailed', (req) => problems.push(`[requestfailed] ${req.url()} ${req.failure()?.errorText || ''}`))
+page.on('requestfailed', (req) => {
+  const failure = req.failure()?.errorText || ''
+  /*
+    视频播放时浏览器会分段读取 MP4；截图结束关闭浏览器后，这些分段会被主动取消。
+    Chromium 把它们报成 ERR_ABORTED，这是正常的流媒体收尾，不是页面加载失败。
+  */
+  if (req.resourceType() === 'media' && failure === 'net::ERR_ABORTED') return
+  problems.push(`[requestfailed] ${req.url()} ${failure}`)
+})
 
 await page.goto(url, { waitUntil: 'load' })
 // 等开场动画结束 + 滚动出现动效跑完 + 字体稳定
